@@ -33,6 +33,9 @@ def tokenise(rawCode: str) -> list:
                 text = line[char]
                 char += 1
                 if char < len(line):
+                    if (text == "'") and (line[char] in (" ", "!")):
+                        text += line[char]
+                        char += 1
                     while line[char].isalnum() or line[char] in ("+", "-", "'"):
                         text += line[char]
                         char += 1
@@ -123,10 +126,14 @@ def tokenise(rawCode: str) -> list:
             return "20"
         if char == "L":
             return "21"
-        if char == "M":
+        if char in ("M", "M0"):
             return "22"
-        if char == "N":
+        if char == "M1":
+            return "23"
+        if char in ("N", "N0"):
             return "24"
+        if char == "N1":
+            return "25"
         if char == "O":
             return "26"
         if char == "P":
@@ -143,8 +150,10 @@ def tokenise(rawCode: str) -> list:
             return "32"
         if char == "V":
             return "33"
-        if char == "W":
+        if char in ("W", "W0"):
             return "34"
+        if char == "W1":
+            return "35"
         if char == "X":
             return "36"
         if char == "Y":
@@ -175,8 +184,10 @@ def tokenise(rawCode: str) -> list:
             return "49"
         if char == "l":
             return "50"
-        if char == "m":
+        if char in ("m", "m0"):
             return "51"
+        if char == "m1":
+            return "52"
         if char == "n":
             return "53"
         if char == "o":
@@ -195,8 +206,10 @@ def tokenise(rawCode: str) -> list:
             return "60"
         if char == "v":
             return "61"
-        if char == "w":
+        if char in ("w", "w0"):
             return "62"
+        if char == "w1":
+            return "63"
         if char == "x":
             return "64"
         if char == "y":
@@ -287,8 +300,10 @@ def tokenise(rawCode: str) -> list:
             return "107"
         if char == "€":
             return "108"
-        if char == "~":
+        if char in ("~", "~0"):
             return "109"
+        if char == "~1":
+            return "110"
         if char == "multiply":
             return "111"
         if char in ("dot", "bullet"):

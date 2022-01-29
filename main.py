@@ -1,5 +1,4 @@
 
-from unittest import result
 from Pseudo_Assembly_Converter.pseudo_assembly_converter import convertPseudoAssembly
 from assembler.assembler import assemble
 from tokeniser.tokeniser import tokenise

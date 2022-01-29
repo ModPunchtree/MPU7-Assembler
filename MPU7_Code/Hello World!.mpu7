@@ -1,4 +1,17 @@
 
-PRT('A');;
+SETX(0);;
+PRT('H');;
+PRT('e');;
+PRT('l');;
+PRT('l');;
+PRT('o');;
+PRT(' ');;
+PRT('W0');;
+PRT('W1');;
+PRT('o');;
+PRT('r');;
+PRT('l');;
+PRT('d');;
+PRT('!');;
 HLT();;
 
