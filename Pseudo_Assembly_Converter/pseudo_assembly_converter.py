@@ -249,7 +249,7 @@ def convertPseudoAssembly(code: list) -> list:
                 tokenNumber += 1
             
             elif token == "PRT":
-                newTokens = ["ADD", "(", "DS", line[tokenNumber + 2], "R0", ")"]
+                newTokens = ["ADD", "(", "R0", line[tokenNumber + 2], "DS", ")"]
                 code[lineNumber] = line[: tokenNumber] + newTokens + line[tokenNumber + 4: ]
                 tokenNumber += 1
                 
