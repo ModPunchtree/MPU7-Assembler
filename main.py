@@ -4,7 +4,7 @@ from Pseudo_Assembly_Converter.pseudo_assembly_converter import convertPseudoAss
 from assembler.assembler import assemble
 from tokeniser.tokeniser import tokenise
 
-name = "fibonacci" #input("File name: ")
+name = input("File name: ")
 
 f = open(f"MPU7_Code\{name}.mpu7", "r")
 code = f.read()
