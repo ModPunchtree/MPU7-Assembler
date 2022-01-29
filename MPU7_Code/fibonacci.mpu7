@@ -1,0 +1,10 @@
+
+.setup
+    RST(R1) JMP(.loop);         ;
+    INC(R2, R0);                ;
+
+.loop
+    ADD(R1, R2) JMP(.loop);     ;
+    ADD(R2, R1);                ;
+
+HLT();                      ;

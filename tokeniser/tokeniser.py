@@ -32,9 +32,12 @@ def tokenise(rawCode: str) -> list:
             if line[char].isalnum() or line[char] in ("@", "~", "-", "+", "'", ".", "!"): # .startswith(("NOP", "RST", "ADD", "ADC", "SUB", "SBB", "MOV", "IMM", "INC", "DEC", "NEG", "LSH", "LSC", "RSH", "NOR", "AND", "NOT", "FLG", "SETX", "SETY", "PRT", "VSH", "SPT", "RPT", "HLT", "JMP", "RET", "STL", "FFG", "CLR", "STR", "LOD")):
                 text = line[char]
                 char += 1
-                while line[char].isalnum() or line[char] in ("+", "-"):
-                    text += line[char]
-                    char += 1
+                if char < len(line):
+                    while line[char].isalnum() or line[char] in ("+", "-"):
+                        text += line[char]
+                        char += 1
+                        if char >= len(line):
+                            break
                 lineAnswer.append(text)
             elif line[char] in ("(", ")", ";"):
                 lineAnswer.append(line[char])
