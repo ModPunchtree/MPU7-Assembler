@@ -1,3 +1,12 @@
 
-STR(5);;
+STR(133) SPT(133);;
+;;
+;;
+;;
+;;
+;;
+;;
+;;
+LOD(R2);; // write 0 into R2
+LOD(R1);; // write 3 into R1
 HLT();;

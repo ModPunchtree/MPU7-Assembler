@@ -11,9 +11,9 @@ def tokenise(rawCode: str) -> list:
     code = rawCode.split("\n")
     
     # remove line comments
-    for line in code:
-        if line.count("//") > 0:
-            line = line[line.index("//"): ]
+    for lineNumber in range(len(code)):
+        if code[lineNumber].count("//") > 0:
+            code[lineNumber] = code[lineNumber][: code[lineNumber].index("//")]
     
     # remove empty lines
     iteration = 0
