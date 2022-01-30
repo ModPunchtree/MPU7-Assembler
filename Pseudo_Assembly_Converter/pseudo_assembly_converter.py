@@ -274,12 +274,12 @@ def convertPseudoAssembly(code: list) -> list:
                     raise Exception(f"FATAL - Invalid number of operands in line: {line}")
             
             elif token == "STR":
-                newTokens = ["ADD", "(", "SR", line[tokenNumber], "R0", ")"]
+                newTokens = ["ADD", "(", "SR", line[tokenNumber + 2], "R0", ")"]
                 code[lineNumber] = line[: tokenNumber] + newTokens + line[tokenNumber + 4: ]
                 tokenNumber += 1
                 
             elif token == "LOD":
-                newTokens = ["ADD", "(", line[tokenNumber], "SR", "R0", ")"]
+                newTokens = ["ADD", "(", line[tokenNumber + 2], "SR", "R0", ")"]
                 code[lineNumber] = line[: tokenNumber] + newTokens + line[tokenNumber + 4: ]
                 tokenNumber += 1
             
