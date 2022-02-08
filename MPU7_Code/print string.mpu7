@@ -23,11 +23,11 @@ STR(R1);; // 17
 
 JMP(.mainLoop);; // 18
 .mainLoop
-INC(R1);; // 19
+INC(R1); DEC(R2) FLG(ZF) STL(~+3); // 19
 STR(R1);;
-JMP(.mainLoop) PRT(SR) FLG(NE); DEC(R2) FLG(ZF) STL(~+1);
+JMP(.mainLoop) PRT(SR) FLG(NE);;
 
-VSH() STL(.bigLoop); HLT();
+SETX(R0) VSH() STL(.bigLoop); HLT();
 
 
 

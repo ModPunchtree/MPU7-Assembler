@@ -1,8 +1,8 @@
 
 from rom_encoder.stringEncoder import stringEncode
 
-string = """The quick brown
-fox jumped over
+string = """The quick brow0w1n
+fox jum0m1ped over
 the lazy dog
 """
 

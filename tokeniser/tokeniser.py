@@ -126,11 +126,11 @@ def tokenise(rawCode: str) -> list:
             return "20"
         if char == "L":
             return "21"
-        if char in ("M", "M0"):
+        if char == "M0":
             return "22"
         if char == "M1":
             return "23"
-        if char in ("N", "N0"):
+        if char == "N0":
             return "24"
         if char == "N1":
             return "25"
@@ -150,7 +150,7 @@ def tokenise(rawCode: str) -> list:
             return "32"
         if char == "V":
             return "33"
-        if char in ("W", "W0"):
+        if char == "W0":
             return "34"
         if char == "W1":
             return "35"
@@ -184,7 +184,7 @@ def tokenise(rawCode: str) -> list:
             return "49"
         if char == "l":
             return "50"
-        if char in ("m", "m0"):
+        if char == "m0":
             return "51"
         if char == "m1":
             return "52"
@@ -206,7 +206,7 @@ def tokenise(rawCode: str) -> list:
             return "60"
         if char == "v":
             return "61"
-        if char in ("w", "w0"):
+        if char == "w0":
             return "62"
         if char == "w1":
             return "63"
@@ -300,7 +300,7 @@ def tokenise(rawCode: str) -> list:
             return "107"
         if char == "€":
             return "108"
-        if char in ("~", "~0"):
+        if char == "~0":
             return "109"
         if char == "~1":
             return "110"
