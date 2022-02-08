@@ -25,12 +25,9 @@ JMP(.mainLoop);; // 18
 .mainLoop
 INC(R1);; // 19
 STR(R1);;
-JMP(.mainLoop) PRT(SR) FLG(NE); DEC(R2) FLG(ZF);
+JMP(.mainLoop) PRT(SR) FLG(NE); DEC(R2) FLG(ZF) STL(~+1);
 
-JMP(.bigLoop);;
-;;
-;;
-VSH(); HLT();
+VSH() STL(.bigLoop); HLT();
 
 
 
