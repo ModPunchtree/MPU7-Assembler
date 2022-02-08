@@ -1,0 +1,12 @@
+
+STR(133) SPT(133);;
+;; // 1
+;; // 2
+;; // 3
+;; // 4
+;; // 5
+SPT(135);; // 6     SPT must be set here
+;; // 7
+;; // 8
+LOD(R1);; // write 1 into R1
+HLT();;

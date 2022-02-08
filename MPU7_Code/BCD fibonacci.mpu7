@@ -1,0 +1,26 @@
+
+RST(R1) SPT(133);;
+INC(R2, R0);;
+SETX(R0);;
+
+.loop
+    ADD(R1, R2) FLG(CF) JMP(.draw);;
+    STR(R1) RPT(.return);;
+    VSH();;
+    ;;
+.return
+    ADD(R2, R1) FLG(CF) JMP(.draw);;
+    STR(R2) RPT(.loop);;
+    VSH();;
+    ;;
+
+.draw
+    ; HLT();
+    ;;
+    ;;
+    SPT(135);;
+    SPT(134);;
+    SPT(133) SETX(R0) RET();;
+    PRT(SR);;
+    PRT(SR);;
+    PRT(SR);;

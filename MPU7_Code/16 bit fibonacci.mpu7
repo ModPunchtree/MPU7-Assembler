@@ -1,0 +1,50 @@
+
+.setup
+    INC(R1, R0);;
+    RST(R2);;
+    RST(R3);;
+    RST(R4);;
+
+.initialPrint
+    PRT('0');;
+    STR(R0) SPT(154);; // toggle NOR/ACF
+    ;;
+    SETX(R0) VSH();;
+    PRT('1');;
+
+.loop
+    ADD(R3, R1) JMP(.print);;
+    ACF(R4, R2) FLG(CF) RPT(.return);;
+    STR(R4) SPT(134);;
+    STR(R3) SPT(133);;
+
+.return
+    ADD(R1, R3);;
+    ACF(R2, R4) FLG(CF) RPT(.loop);;
+    STR(R2) SPT(134);;
+    STR(R1) SPT(133);;
+
+.print
+    ;;
+    ; HLT();
+    ;;
+    ;;
+    ;;
+    ;;
+    ;;
+    SPT(137);;
+    SPT(136);;
+    SETX(R0) VSH() SPT(135);;
+    LOD(R5) FLG(!ZF) SPT(134);;
+    LOD(R6) FLG(!ZF) SPT(133);;
+    LOD(R7) FLG(!ZF);;
+    LOD(R8) FLG(!ZF);; 
+    ; PRT(R5) FFG();
+    RET(); PRT(R6) FFG() RET();
+    ; PRT(R7) FFG();
+    ; PRT(R8);
+    PRT(SR);;
+
+
+
+

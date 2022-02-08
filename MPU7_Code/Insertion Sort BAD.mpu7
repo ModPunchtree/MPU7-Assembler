@@ -1,0 +1,55 @@
+
+
+.setup
+    STR(10);;
+    SPT(1);;
+    STR(9);;
+    SPT(2);;
+    STR(8);;
+    SPT(3);;
+    STR(7);;
+    SPT(4);;
+    STR(6);;
+    SPT(5);;
+    STR(5);;
+    SPT(6);;
+    STR(4);;
+    SPT(7);;
+    STR(3);;
+    SPT(8);;
+    STR(2);;
+    SPT(9);;
+    STR(1);;
+
+.sort
+    INC(R1, R0);; // R1 is pointer to number to be sorted
+    DEC(R3, R1);; // R3 is pointer to number to be compared to R2
+    MOV(SP, R1);;
+.fetch
+    ;;
+    ; HLT();
+    MOV(SP, R3);;
+    INC(R4, R3) JMP(.skip);;
+    ;;
+    MOV(SP, R4);;
+    LOD(R2);; // R2 is the number being sorted
+
+.loop
+    MOV(SP, R3);;
+    INC(R4, R3);;
+    ;;
+    MOV(SP, R4);;
+    ;;
+.skip
+    ;;
+    ;;
+    ADC(R0, !SR, R2) FLG(CF);;
+    LOD(R4);; // R4 is intermediate reg
+    ;;
+    ;;
+    DEC(R3) JMP(.loop); INC(R1) FFG() JMP(.fetch);
+    STR(R4); SUB(R0, R1, 10) FLG(ZF) FFG();
+    ; STR(R3);
+    MOV(SP, R1);;
+
+/////  828 cycles or 6 mins 54 secs

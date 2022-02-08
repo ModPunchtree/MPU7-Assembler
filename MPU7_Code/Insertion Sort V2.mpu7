@@ -1,0 +1,54 @@
+
+
+.setup
+    STR(10);; // 0
+    SPT(1);;
+    STR(9);;
+    SPT(2);; // 3
+    STR(8);;
+    SPT(3);;
+    STR(7);;
+    SPT(4);; // 7
+    STR(6);;
+    SPT(5);;
+    STR(5);; // 10
+    SPT(6);;
+    STR(4);;
+    SPT(7);;
+    STR(3);; // 14
+    SPT(8);;
+    STR(2);;
+    SPT(9);;
+    STR(1) FFG();; // 18
+
+.sort
+    ; INC(R1, R0) STL(.sort); // R1 is pointer to number to be sorted 19
+
+.loop
+    MOV(SP, R1);;
+    DEC(R3, R1); HLT(); // R3 is pointer to number to be compared to R2
+    ;; ////////////// 22
+    MOV(SP, R3);; ////////////// 23
+    INC(R4, R3);; ////////////// 24 //////////////////////////////////////////////////////////
+    DEC(R3);; ////////////// 25
+    ;;
+    LOD(R2);; // R2 is the number being sorted
+
+.rapidFetchLoop
+    MOV(SP, R3);;
+    INC(R6, R3);; //////////////////////////////////// 29
+    DEC(R3);;
+    MOV(SP, R4);;
+    ADC(R0, !SR, R2) FLG(CF);;
+    LOD(R4);;
+    ;;
+    ADC(R0, !SR, R2) FLG(CF);;
+    LOD(R5); INC(R3) FFG();
+    STR(R4); FFG(); // 37
+    MOV(SP, R6); FFG();
+    STR(R5) JMP(.rapidFetchLoop); ADD(R3, 2) FFG(); //////////////// 39
+    MOV(SP, R3); INC(R1) FFG() JMP(.loop);    ////////////// 40
+    DEC(R3); SUB(R0, R1, 10) FLG(ZF) FFG(); /////// 41
+    ADD(R4, R3, 2); MOV(SP, R3); /////// 42
+    STR(R2);;
+    HLT();; ////// 44

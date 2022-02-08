@@ -1,0 +1,36 @@
+
+.setup
+SPT(158) STR(R0);;
+RST(R1);; // 1
+IMM(R2, 3);; // 2
+;; // 3
+;; // 4
+;; // 5
+;; // 6
+;; // 7
+SPT(157) STR(R1);;
+;; // 9
+.bigLoop
+INC(R1);; // 10
+STR(R1);; // 11
+;; // 12
+INC(R1);; // 13
+STR(R1);; // 14
+;; // 15
+INC(R1);; // 16
+STR(R1);; // 17
+
+
+JMP(.mainLoop);; // 18
+.mainLoop
+INC(R1);; // 19
+STR(R1);;
+JMP(.mainLoop) PRT(SR) FLG(NE); DEC(R2) FLG(ZF);
+
+JMP(.bigLoop);;
+;;
+;;
+VSH(); HLT();
+
+
+

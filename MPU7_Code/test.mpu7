@@ -1,12 +1,11 @@
 
-STR(133) SPT(133);;
-;;
-;;
-;;
-;;
-;;
-;;
-;;
-LOD(R2);; // write 0 into R2
-LOD(R1);; // write 3 into R1
+STR(R0) SPT(154);; // toggle NOR/ACF
+IMM(R1, 2);;
+RST(R2);;
+IMM(R3, 255);;
+IMM(R4, 5);;
+ADD(R5, R1, R3);;
+ACF(R6, R2, R4);;
 HLT();;
+
+

@@ -48,6 +48,21 @@ def convertPseudoAssembly(code: list) -> list:
                 else:
                     raise Exception(f"FATAL - Invalid number of operands in line: {line}")
             
+            elif token == "ACF":
+                opCount = 0
+                pointer = tokenNumber + 2
+                while line[pointer] != ")":
+                    pointer += 1
+                    opCount += 1
+                if opCount == 3:
+                    tokenNumber += 1
+                elif opCount == 2:
+                    newTokens = ["ACF", "(", line[tokenNumber + 2], line[tokenNumber + 2], line[tokenNumber + 3], ")"]
+                    code[lineNumber] = line[: tokenNumber] + newTokens + line[tokenNumber + 5: ]
+                    tokenNumber += 1
+                else:
+                    raise Exception(f"FATAL - Invalid number of operands in line: {line}")
+            
             elif token == "SUB":
                 opCount = 0
                 pointer = tokenNumber + 2
@@ -249,7 +264,7 @@ def convertPseudoAssembly(code: list) -> list:
                 tokenNumber += 1
             
             elif token == "PRT":
-                newTokens = ["ADD", "(", "R0", "DS", line[tokenNumber + 2], ")"]
+                newTokens = ["ADD", "(", "R0", line[tokenNumber + 2], "DSW", ")"]
                 code[lineNumber] = line[: tokenNumber] + newTokens + line[tokenNumber + 4: ]
                 tokenNumber += 1
                 
@@ -281,6 +296,11 @@ def convertPseudoAssembly(code: list) -> list:
             elif token == "LOD":
                 newTokens = ["ADD", "(", line[tokenNumber + 2], "SR", "R0", ")"]
                 code[lineNumber] = line[: tokenNumber] + newTokens + line[tokenNumber + 4: ]
+                tokenNumber += 1
+            
+            elif token == "HLT":
+                newTokens = ["HLT", "(", ")", "STL", "(", ")"]
+                code[lineNumber] = line[: tokenNumber] + newTokens + line[tokenNumber + 3: ]
                 tokenNumber += 1
             
             else:

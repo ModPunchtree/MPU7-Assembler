@@ -1,0 +1,34 @@
+
+.setup
+    INC(R1, R0);; // R1 = number
+    RST(R2);; // R2 = fizz count
+    RST(R3);; // R3 = buzz count
+
+.printNumber
+    STR(R1) SPT(133);;
+    RPT(.loop);;
+    SPT(134) STL(RET);;
+.loop
+    INC(R1) JMP(~+3);;
+    SETX(R0) SPT(133);;
+    VSH();;
+    PRT(SR);;
+    PRT(':');;
+
+.fizzbuzz
+    SUB(R0, R2, 2) FLG(ZF);;
+    STR(R1);;
+    SPT(134);;
+    ;;
+    INC(R2); RST(R2) FFG();
+    ; PRT('F') FFG();
+    SUB(R0, R3, 4) FLG(ZF); SUB(R0, R3, 4) FLG(ZF) FFG();
+    ; PRT('i') FFG();
+    ; PRT('z') FFG();
+    ; PRT('z');
+    INC(R3); RST(R3) FFG();
+    RET(); PRT('B') FFG() RET();
+    ; PRT('u') FFG();
+    ; PRT('z') FFG();
+    ; PRT('z');
+

@@ -38,8 +38,10 @@ def convertB(operand: str) -> list:
         return [1, 1, 0, 0]
     elif operand == "RP":
         return [1, 1, 0, 1]
-    elif operand in ("DS", "DSR"):
+    elif operand == "DSR":
         return [1, 1, 1, 0]
+    elif operand == "DSW":
+        return [1, 1, 1, 1]
     elif operand[0].isnumeric():
         return [1, 0, 1, 1]
     else:
@@ -193,7 +195,7 @@ def assemble(code: list) -> list:
                     operand2 = operand2[1: ]
                     if collisionCheck((18, ), instructionROMMirror[flag][lineNumber]):
                         raise Exception(f"FATAL - Duplicate A side invert in line: {line}")
-                    instructionROMMirror[flag][lineNumber][lineNumber][18] = 1
+                    instructionROMMirror[flag][lineNumber][18] = 1
                 else:
                     if collisionCheck((18, ), instructionROMMirror[flag][lineNumber]):
                         raise Exception(f"FATAL - Duplicate A side invert in line: {line}")
@@ -212,7 +214,8 @@ def assemble(code: list) -> list:
                     raise Exception(f"FATAL - Duplicate A operand in line: {line}")
                 for i in range(4):
                     instructionROM[flag][lineNumber][13 + i] = operand2Binary[i]
-                    instructionROMMirror[flag][lineNumber][13 + i] = 1
+                    if operand2 != "R0":
+                        instructionROMMirror[flag][lineNumber][13 + i] = 1
                 
                 tokenNumber += 1
                 operand3 = line[tokenNumber]
@@ -239,12 +242,13 @@ def assemble(code: list) -> list:
                     raise Exception(f"FATAL - Duplicate B operand in line: {line}")
                 for i in range(4):
                     instructionROM[flag][lineNumber][7 + i] = operand3Binary[i]
-                    instructionROMMirror[flag][lineNumber][7 + i] = 1
+                    if operand3 != "R0":
+                        instructionROMMirror[flag][lineNumber][7 + i] = 1
                 
                 # fix R0 inverts
-                if operand2 in ("R0", "DS", "DSW", "VSH", "HLT"):
+                if operand2 in ("R0", "CLR", "VSH", "HLT"):
                     instructionROM[flag][lineNumber][18] = 1 - instructionROM[flag][lineNumber][18]
-                if operand3 in ("R0", "CLR"):
+                if operand3 in ("R0", "DS", "DSW"):
                     instructionROM[flag][lineNumber][17] = 1 - instructionROM[flag][lineNumber][17]
                 
                 tokenNumber += 2
@@ -364,12 +368,12 @@ def assemble(code: list) -> list:
                 tokenNumber += 3
             
             elif line[tokenNumber] == "CLR":
-                if collisionCheck((7, 8, 9, 10), instructionROMMirror[flag][lineNumber]):
-                    raise Exception(f"FATAL - Duplicate B operation (CLR) in line: {line}")
+                if collisionCheck((13, 14, 15, 16), instructionROMMirror[flag][lineNumber]):
+                    raise Exception(f"FATAL - Duplicate A operation (CLR) in line: {line}")
                 binary = [1, 1, 1, 1]
                 for i in range(4):
-                    instructionROM[flag][lineNumber][7 + i] = binary[i]
-                    instructionROMMirror[flag][lineNumber][7 + i] = 1
+                    instructionROM[flag][lineNumber][13 + i] = binary[i]
+                    instructionROMMirror[flag][lineNumber][13 + i] = 1
                 
                 tokenNumber += 3
             

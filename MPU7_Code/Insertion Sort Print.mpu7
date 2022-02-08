@@ -1,0 +1,120 @@
+
+
+.setup
+    STR(9);; // 0
+    SPT(1);;
+    STR(8);;
+    SPT(2);; // 3
+    STR(7);;
+    SPT(3);;
+    STR(6);;
+    SPT(4);; // 7
+    STR(5);;
+    SPT(5);;
+    STR(4);; // 10
+    SPT(6);;
+    STR(3);;
+    SPT(7);;
+    STR(2);; // 14
+    SPT(8);;
+    STR(1);;
+    SPT(9);;
+    STR(0);; // 18
+
+.initialPrint
+    SPT(0);;
+    PRT('I');;
+    PRT('n');;
+    PRT('i');;
+    PRT('t');; // 23
+    PRT('i');;
+    PRT('a');;
+    PRT('l');;
+    PRT(' ');; // 27
+    PRT('L');;
+    PRT('i');;
+    PRT('s');;
+    PRT('t');; // 31
+    PRT(':');;
+    INC(R1, R0);; // 33
+    IMM(R2, 6);; // 34
+    SETX(R0) VSH();; // 35
+.initialPrintLoop1
+    PRT(SR);;
+    PRT(' ');;
+    MOV(SP, R1);; // 38
+    INC(R1);; // 39
+    SUB(R0, R1, R2) FLG(ZF) STL(~+1);;
+    STL(.initialPrintLoop1); SETX(R0) VSH();
+    IMM(R2, 11);; // 42
+.initialPrintLoop2
+    PRT(SR);;
+    PRT(' ');;
+    MOV(SP, R1);; // 45
+    INC(R1);;
+    SUB(R0, R1, R2) FLG(ZF) STL(~+1);;
+    STL(.initialPrintLoop2); SETX(R0) FFG(); // 48
+
+.sort
+    ; INC(R1, R0) STL(.sort); // R1 is pointer to number to be sorted
+
+.loop
+    MOV(SP, R1);; // 50
+    DEC(R3, R1); STL(.finalPrint); // R3 is pointer to number to be compared to R2
+    ;;
+    MOV(SP, R3);;
+    INC(R4, R3);; // 54
+    DEC(R3);;
+    ;;
+    LOD(R2);; // R2 is the number being sorted
+
+.rapidFetchLoop
+    MOV(SP, R3);; // 58
+    INC(R6, R3);;
+    DEC(R3);;
+    MOV(SP, R4);;
+    ADC(R0, !SR, R2) FLG(CF);; // 62
+    LOD(R4);;
+    ;;
+    ADC(R0, !SR, R2) FLG(CF);; // 65
+    LOD(R5); INC(R3) FFG();
+    STR(R4); FFG();
+    MOV(SP, R6); FFG();
+    STR(R5) JMP(.rapidFetchLoop); ADD(R3, 2) FFG(); // 69
+    MOV(SP, R3); INC(R1) FFG() JMP(.loop);
+    DEC(R3); SUB(R0, R1, 10) FLG(ZF) FFG();
+    ADD(R4, R3, 2); MOV(SP, R3);
+    STR(R2);; // 73
+
+.finalPrint
+    SPT(0) VSH();;
+    PRT('F');;
+    PRT('i');; // 76
+    PRT('n');;
+    PRT('a');;
+    PRT('l');;
+    PRT(' ');; // 80
+    PRT('L');;
+    PRT('i');;
+    PRT('s');;
+    PRT('t');;
+    PRT(':');; // 85
+    INC(R1, R0);;
+    IMM(R2, 6);; // 87
+    SETX(R0) VSH();; // 88
+.finalPrintLoop1
+    PRT(SR);;
+    PRT(' ');; // 90
+    MOV(SP, R1);;
+    INC(R1);;
+    SUB(R0, R1, R2) FLG(ZF) STL(~+1);;
+    STL(.finalPrintLoop1); SETX(R0) VSH();
+    IMM(R2, 10);; // 95
+.finalPrintLoop2
+    PRT(SR);;
+    PRT(' ');;
+    MOV(SP, R1);;
+    INC(R1);;
+    SUB(R0, R1, R2) FLG(ZF) STL(~+1);;
+    STL(.finalPrintLoop2); HLT();
+

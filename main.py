@@ -56,18 +56,18 @@ for lineNumber in range(256):
         nonFlagROM += f"{instructionROM[0][lineNumber][: 12]}{instructionROM[0][lineNumber][12: ]}\n"
     temp = sum(immediateROM[0][lineNumber])
     if temp > 0:
-        nonFlagImmediate += f"{immediateROM[0][lineNumber]} {temp}*\n"
+        nonFlagImmediate += f"{immediateROM[0][lineNumber][: 4]}{immediateROM[0][lineNumber][4: ]} {temp}*\n"
     else:
-        nonFlagImmediate += f"{immediateROM[0][lineNumber]}\n"
+        nonFlagImmediate += f"{immediateROM[0][lineNumber][: 4]}{immediateROM[0][lineNumber][4: ]}\n"
     temp = sum(immediateROM[1][lineNumber])
     if temp > 0:
-        flagImmediate += f"{immediateROM[1][lineNumber]} {temp}*\n"
+        flagImmediate += f"{immediateROM[1][lineNumber][: 4]}{immediateROM[1][lineNumber][4: ]} {temp}*\n"
     else:
-        flagImmediate += f"{immediateROM[1][lineNumber]}\n"
+        flagImmediate += f"{immediateROM[1][lineNumber][: 4]}{immediateROM[1][lineNumber][4: ]}\n"
         
 nonflagColumn = "     " + " ".join(nonFlagColumnChecksums[: 12]) + " | " + " ".join(nonFlagColumnChecksums[12: ])
 flagColumn = "     " + " ".join(flagColumnChecksums[: 12]) + " | " + " ".join(flagColumnChecksums[12: ])
 
-answer = f"Non-flag Instruction ROM:\n{nonFlagROM}{nonflagColumn}\n\nFlag Instruction ROM:\n{flagROM}{flagColumn}\n\nNon-flag Immediate ROM\n{nonFlagImmediate}\nFlag Immediate ROM\n{flagImmediate}"
+answer = ((f"Non-flag Instruction ROM:\n{nonFlagROM}{nonflagColumn}\n\nFlag Instruction ROM:\n{flagROM}{flagColumn}\n\nNon-flag Immediate ROM\n{nonFlagImmediate}\nFlag Immediate ROM\n{flagImmediate}").replace(",", " ")).replace("][", " | ")
 
 print(answer)
