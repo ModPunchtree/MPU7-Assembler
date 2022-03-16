@@ -18,7 +18,7 @@ def tokenise(rawCode: str) -> list:
     # remove empty lines
     iteration = 0
     while iteration < len(code):
-        if not code[iteration]:
+        if (not code[iteration]) or (code[iteration].count(" ") == len(code[iteration])):
             code.pop(iteration)
         else:
             iteration += 1
@@ -29,14 +29,14 @@ def tokenise(rawCode: str) -> list:
         lineAnswer = []
         char = 0
         while char < len(line):
-            if line[char].isalnum() or line[char] in ("@", "~", "-", "+", "'", ".", "!"): # .startswith(("NOP", "RST", "ADD", "ADC", "SUB", "SBB", "MOV", "IMM", "INC", "DEC", "NEG", "LSH", "LSC", "RSH", "NOR", "AND", "NOT", "FLG", "SETX", "SETY", "PRT", "VSH", "SPT", "RPT", "HLT", "JMP", "RET", "STL", "FFG", "CLR", "STR", "LOD")):
+            if line[char].isalnum() or line[char] in ("@", "~", "-", "+", "'", ".", "!", "_"): # .startswith(("NOP", "RST", "ADD", "ADC", "SUB", "SBB", "MOV", "IMM", "INC", "DEC", "NEG", "LSH", "LSC", "RSH", "NOR", "AND", "NOT", "FLG", "SETX", "SETY", "PRT", "VSH", "SPT", "RPT", "HLT", "JMP", "RET", "STL", "FFG", "CLR", "STR", "LOD")):
                 text = line[char]
                 char += 1
                 if char < len(line):
                     if (text == "'") and (line[char] in (" ", "!", ":", ";", "%", "#", "'", "~", "(", ")", "{", "}", "[", "]", "<", ">", "?", "/", "\\", "£", "$", "€", "^", "&", "=", "_", "|")):
                         text += line[char]
                         char += 1
-                    while line[char].isalnum() or line[char] in ("+", "-", "'"):
+                    while line[char].isalnum() or line[char] in ("+", "-", "'", "_", "."):
                         text += line[char]
                         char += 1
                         if char >= len(line):
@@ -346,5 +346,21 @@ def tokenise(rawCode: str) -> list:
                 char = token[1: -1]
                 number = convertChar(char)
                 answer[lineNumber][tokenNumber] = number
+    
+    for line in answer:
+        if line[0] == "@DEFINE":
+            key = "@" + line[1]
+            value = line[2]
+            for lineNumber, line2 in enumerate(answer):
+                for tokenNumber, token in enumerate(line2):
+                    if token == key:
+                        answer[lineNumber][tokenNumber] = value
+    
+    temp = 0
+    while temp < len(answer):
+        if answer[temp][0] == "@DEFINE":
+            answer.pop(temp)
+        else:
+            temp += 1
     
     return answer

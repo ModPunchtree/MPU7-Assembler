@@ -201,8 +201,10 @@ def convertPseudoAssembly(code: list) -> list:
                     newTokens = ["RSH", "(", line[tokenNumber + 2], line[tokenNumber + 2], "R0", ")"]
                     code[lineNumber] = line[: tokenNumber] + newTokens + line[tokenNumber + 4: ]
                     tokenNumber += 1
-                else:
+                elif opCount != 3:
                     raise Exception(f"FATAL - Invalid number of operands in line: {line}")
+                else:
+                    tokenNumber += 1
             
             elif token == "NOR":
                 opCount = 0

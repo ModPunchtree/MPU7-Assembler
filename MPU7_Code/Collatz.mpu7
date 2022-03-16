@@ -1,0 +1,55 @@
+
+// R1 == value
+// R2 == counter
+// R3 == temp
+
+.setup
+    IMM(R1, 9);;
+    ADD(R2, R0, !R0) RPT(.print);;
+
+.print
+    STR(R1) SPT(133); VSH() STL(.final);
+    VSH();; // 1
+    ;; // 2
+    ;; // 3
+    ;; // 4
+    ;; // 5
+    SPT(135);; // 6
+    SPT(134);; // 7
+    SPT(133);; // 8
+    ADD(R0, SR, DSW);;
+    ADD(R0, SR, DSW);;
+    ADD(R0, SR, DSW);;
+
+.main
+    ADD(R0, R1, R0) FLG(OD);;
+    LSH(R3, R1);;
+    SUB(R0, R1, 1) FLG(ZF) RET();; // test if R1 == 1
+    SETX(R0);;
+    RSH(R1); ADC(R1, R3);
+    INC(R2);; ////////////////////////////
+
+.final
+    STR(R2) SPT(133);; // 20 ////////////////////////////
+    PRT('I');; // 0
+    PRT('t');; // 1
+    PRT('e');; // 2
+    PRT('r');; // 3
+    PRT('a');; // 4
+    PRT('t');; // 5
+    PRT('i');; // 6
+    PRT('o');; // 7
+    PRT('n');; // 8
+    PRT('s');; // 9
+    PRT(' ');; // 10
+    PRT('=');; // 11
+    PRT(' ');; // 12
+    SPT(135);;
+    SPT(134);;
+    SPT(133);;
+    ADD(R0, SR, DSW);; // 13
+    ADD(R0, SR, DSW);; // 14
+    ADD(R0, SR, DSW);; // 15
+    HLT();;
+
+

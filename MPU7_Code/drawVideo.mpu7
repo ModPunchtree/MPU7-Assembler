@@ -1,0 +1,76 @@
+
+// R1 = byte pointer
+// R2 = page pointer
+// R3, R4, R5 = bytes from ROM
+// R6, R7, R8 = temp for ROM bytes
+// R9 = VSH counter
+// R10 = frame counter
+
+.setup
+    SPT(158) STR(R0);; // set page to zero
+    SPT(155) STR(R0);; // turn cursor off // 1
+    RST(R1);; // 2
+    IMM(R2, 1);; // 3
+    IMM(R9, 3);; // 3 lines per frame // 4
+    IMM(R10, 14);; // 14 frames per page // 5
+    SPT(145) STR(R0);; // set buffer on // 6
+.start
+    SETX(R0) RPT(.readBytes);; // 7
+
+.readBytes
+    SPT(157) STR(R1);; // 8
+    INC(R1);; // 1
+    STR(R1);; // 2
+    INC(R1);; // 3
+    STR(R1);; // 4
+    INC(R1);; // 5
+    ;; // 6
+    ;; // 7
+    ;; // 8
+    ;; // 9
+    ;; // 10
+    ;; // 11
+    LOD(R3);; // 20
+    AND(R6, R3, 63);;
+    LOD(R4);;
+    AND(R7, R4, 63);;
+    LOD(R5);;
+    AND(R8, R5, 63);; // 25
+    RSH(R3);; // get 2 bits
+    RSH(R3);;
+    RSH(R3);; // 28
+    RSH(R3);;
+    RSH(R3);;
+    RSH(R3);; // 31
+    RSH(R4);;
+    RSH(R4);;
+    RSH(R4);; // 34
+    RSH(R4);;
+    AND(R4, 12);; // 36
+    RSH(R5);;
+    RSH(R5);;
+    AND(R5, 48);; // 39
+    ADD(R3, R4);;
+    ADD(R3, R5);;
+    PRT(R6) RET();; // 42
+    PRT(R7) RPT(.newLine);;
+    PRT(R8);;
+    PRT(R3);; // 45
+
+.newLine
+    DEC(R9) FLG(ZF);; // test if reached end of frame // 46
+    RPT(.readBytes);; // 47
+    ;;
+    ;;
+    SETX(R0) VSH() STL(.readBytes); ADD(R10, !R0, R10) FLG(ZF); // test if reached end of page // 50
+
+.nextFrame
+    IMM(R9, 3);;
+    SPT(145) ADC(SR, R0, R0);; // update buffer // 52
+    SPT(145) STR(R0) CLR();;
+    SETX(R0) STL(.readBytes); SPT(158) STR(R2); // 54
+
+.nextPage
+    INC(R2);; // 1
+    IMM(R10, 14);; // 2
+    RST(R1) STL(.start);; // 3 4 5 6 // 57

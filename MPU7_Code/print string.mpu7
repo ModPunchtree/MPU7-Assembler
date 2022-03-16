@@ -8,9 +8,9 @@ IMM(R2, 3);; // 2
 ;; // 5
 ;; // 6
 ;; // 7
+.bigLoop
 SPT(157) STR(R1);;
 ;; // 9
-.bigLoop
 INC(R1);; // 10
 STR(R1);; // 11
 ;; // 12
@@ -25,9 +25,11 @@ JMP(.mainLoop);; // 18
 .mainLoop
 INC(R1); DEC(R2) FLG(ZF) STL(~+3); // 19
 STR(R1);;
-JMP(.mainLoop) PRT(SR) FLG(NE);;
+JMP(.mainLoop) PRT(SR) FLG(NE);; // 21
 
-SETX(R0) VSH() STL(.bigLoop); HLT();
-
-
+.end
+SETX(R0) VSH() JMP(.bigLoop); HLT(); // 22
+SUB(R1, 3);; // 23
+;;
+;;
 

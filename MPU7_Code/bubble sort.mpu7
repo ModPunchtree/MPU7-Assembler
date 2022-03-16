@@ -1,0 +1,64 @@
+
+.setup
+    STR(15);;
+    SPT(1);;
+    STR(14);;
+    SPT(2);;
+    STR(13);;
+    SPT(3);;
+    STR(12);;
+    SPT(4);;
+    STR(11);;
+    SPT(5);;
+    STR(10);;
+    SPT(6);;
+    STR(9);;
+    SPT(7);;
+    STR(8);;
+    SPT(8);;
+    STR(7);;
+    SPT(9);;
+    STR(6);;
+    SPT(10);;
+    STR(5);;
+    SPT(11);;
+    STR(4);;
+    SPT(12);;
+    STR(3);;
+    SPT(13);;
+    STR(2);;
+    SPT(14);;
+    STR(1);;
+    SPT(15) MOV(R4, 15);; // 29 ///////////////////////////////
+    STR(0);; // 30
+
+.start
+    RST(R1);; // array pointer // 31
+    RST(R3);; // swap tracker // 32
+
+.loop
+    INC(R1);; // 33
+.loop3
+    MOV(SP, R1);; // 34
+    MOV(SP, R1);; // 35
+.loop2
+    SUB(R0, R1, R4) FLG(ZF);; // R1 == 16: reset and goto .loop // 36
+    ;; // 37
+    ;; // 38
+    ;; // 39
+    ; MOV(R0, R3) FLG(ZF) FFG() JMP(.end); // 40
+    LOD(R2); RST(R1) FFG() JMP(.loop3); // 41
+    ADC(R0, SR, !R2) FLG(!CF); RST(R3) FFG(); // 42
+    DEC(R1); DEC(R4); // 43 //////////////////////////////////////
+    ;; // 44
+    ;; // 45
+    JMP(.loop2) INC(R1); STR(R2) FFG(); // 46
+    INC(R1); MOV(SP, R1) FFG() JMP(.loop); // 47
+    MOV(SP, R1); STR(SR) FFG(); // 48
+    MOV(SP, R1); INC(R3, R0) FFG(); // 49
+    ; INC(R1); // 50
+
+.end
+    INC(R1); HLT(); // 51
+
+

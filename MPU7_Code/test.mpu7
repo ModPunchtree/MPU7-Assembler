@@ -1,11 +1,27 @@
 
-STR(R0) SPT(154);; // toggle NOR/ACF
-IMM(R1, 2);;
-RST(R2);;
-IMM(R3, 255);;
-IMM(R4, 5);;
-ADD(R5, R1, R3);;
-ACF(R6, R2, R4);;
-HLT();;
+// 4x4 pixels
+// 0 == 127
+// 1 == 124 /////
+// 2 == 125 /////
+// 3 == 126
+
+// y = 3 bit
+// x = 4 bit
+
+// R1 = x
+// R2 = y
+// R10 = temp
+
+.setup
+    IMM(R1, 5);;
+    IMM(R2, 2);;
+
+.print4x4
+    RSH(Y, R0, R2) FLG(CF);;
+    SETX(R1);;
+    ;;
+    ;;
+    PRT(124); PRT(125);
+    HLT();;
 
 

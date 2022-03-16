@@ -105,6 +105,9 @@ def convertImmediate(immediate: str) -> list:
 
 def assemble(code: list) -> list:
     
+    if len(code) > 256:
+        raise Exception(f"Fatal - Program is too big: {len(code)} lines")
+    
     # create non-flag and flag roms
     instructionROM = [[[0 for i in range(24)] for j in range(256)] for k in range(2)]
     
@@ -370,7 +373,7 @@ def assemble(code: list) -> list:
             elif line[tokenNumber] == "CLR":
                 if collisionCheck((13, 14, 15, 16), instructionROMMirror[flag][lineNumber]):
                     raise Exception(f"FATAL - Duplicate A operation (CLR) in line: {line}")
-                binary = [1, 1, 1, 1]
+                binary = [1, 1, 0, 1]
                 for i in range(4):
                     instructionROM[flag][lineNumber][13 + i] = binary[i]
                     instructionROMMirror[flag][lineNumber][13 + i] = 1

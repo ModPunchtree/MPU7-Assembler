@@ -1,0 +1,270 @@
+
+// function 1
+// read in first 8 values pointed to by RST(R10)
+// bubble sort those 8 values
+
+// function 2
+// put lowest value in ram (use R10 as pointer)
+// grab next value from ram (same register)
+// bubble that value up the list (continue until failed swap)
+// then increment R10 and repeat until R10 == index 7
+// write remaining 7 reg to ram
+
+// do function 1 once more
+// immediately write results from registers back into ram
+// HLT
+
+.setup
+    STR(15);; // 0
+
+    SPT(1) RPT(1);      SPT(8) FFG();
+    STR(14);            STR(7) FFG();
+    SPT(2);             SPT(9) FFG(); // 3
+    STR(13);            STR(6) FFG();
+    SPT(3);             SPT(10) FFG();
+    STR(12);            STR(5) FFG(); // 6
+    SPT(4);             SPT(11) FFG();
+    STR(11);            STR(4) FFG();
+    SPT(5);             SPT(12) FFG(); // 9
+    STR(10);            STR(3) FFG();
+    SPT(6) RET();       SPT(13) FFG();
+    STR(9);             STR(2) FFG(); // 12
+    SPT(7);             SPT(14) FFG();
+    STR(8) FFG();       STR(1);
+
+    RPT(.function2);; // 15
+
+.function1
+    RST(R10) SPT(0);; // R10 = array pointer // R9 = temp // 16
+    SPT(1);;
+    SPT(2);;
+    SPT(3);;
+    SPT(4);; // 20
+    SPT(5);;
+    LOD(R1) SPT(6);;
+    LOD(R2) SPT(7);; // 23
+    LOD(R3);;
+    LOD(R4);;
+    LOD(R5);; // 26
+    LOD(R6);;
+    LOD(R7);;
+    LOD(R8);; // 29
+.eightRegFullBubbleSort
+
+    /////// First iteration
+
+    SUB(R0, R2, R1) FLG(!CF);; // 30
+    ;;
+    ;;
+    MOV(R9, R1);;
+    ; MOV(R1, R2) FFG();
+    MOV(R9, R2); MOV(R2, R9); // 35
+
+    SUB(R0, R3, R2) FLG(!CF) STL(~+1);;
+    ; MOV(R2, R3) FFG();
+    MOV(R9, R3); MOV(R3, R9); // 38
+
+    SUB(R0, R4, R3) FLG(!CF) STL(~+1);;
+    ; MOV(R3, R4) FFG();
+    MOV(R9, R4); MOV(R4, R9); // 41
+
+    SUB(R0, R5, R4) FLG(!CF) STL(~+1);;
+    ; MOV(R4, R5) FFG();
+    MOV(R9, R5); MOV(R5, R9); // 44
+
+    SUB(R0, R6, R5) FLG(!CF) STL(~+1);;
+    ; MOV(R5, R6) FFG();
+    MOV(R9, R6); MOV(R6, R9); // 47
+
+    SUB(R0, R7, R6) FLG(!CF) STL(~+1);;
+    ; MOV(R6, R7) FFG();
+    MOV(R9, R7); MOV(R7, R9); // 50
+
+    SUB(R0, R8, R7) FLG(!CF) STL(~+1);;
+    ; MOV(R7, R8) FFG();
+    ; MOV(R8, R9); // 53
+
+    /////// Second iteration
+
+    SUB(R0, R2, R1) FLG(!CF);;
+    ;;
+    ;;
+    MOV(R9, R1);;
+    ; MOV(R1, R2) FFG();
+    MOV(R9, R2); MOV(R2, R9); // 59
+
+    SUB(R0, R3, R2) FLG(!CF) STL(~+1);;
+    ; MOV(R2, R3) FFG();
+    MOV(R9, R3); MOV(R3, R9); // 62
+
+    SUB(R0, R4, R3) FLG(!CF) STL(~+1);;
+    ; MOV(R3, R4) FFG();
+    MOV(R9, R4); MOV(R4, R9); // 65
+
+    SUB(R0, R5, R4) FLG(!CF) STL(~+1);;
+    ; MOV(R4, R5) FFG();
+    MOV(R9, R5); MOV(R5, R9); // 68
+
+    SUB(R0, R6, R5) FLG(!CF) STL(~+1);;
+    ; MOV(R5, R6) FFG();
+    MOV(R9, R6); MOV(R6, R9); // 71
+
+    SUB(R0, R7, R6) FLG(!CF) STL(~+1);;
+    ; MOV(R6, R7) FFG();
+    ; MOV(R7, R9); // 74
+
+    /////// Third iteration
+
+    SUB(R0, R2, R1) FLG(!CF);; // 75
+    ;;
+    ;;
+    MOV(R9, R1);;
+    ; MOV(R1, R2) FFG();
+    MOV(R9, R2); MOV(R2, R9); // 80
+
+    SUB(R0, R3, R2) FLG(!CF) STL(~+1);;
+    ; MOV(R2, R3) FFG();
+    MOV(R9, R3); MOV(R3, R9); // 83
+
+    SUB(R0, R4, R3) FLG(!CF) STL(~+1);;
+    ; MOV(R3, R4) FFG();
+    MOV(R9, R4); MOV(R4, R9); // 86
+
+    SUB(R0, R5, R4) FLG(!CF) STL(~+1);;
+    ; MOV(R4, R5) FFG();
+    MOV(R9, R5); MOV(R5, R9); // 89
+
+    SUB(R0, R6, R5) FLG(!CF) STL(~+1);;
+    ; MOV(R5, R6) FFG();
+    ; MOV(R6, R9); // 92
+
+    /////// Fourth iteration
+
+    SUB(R0, R2, R1) FLG(!CF);; // 93
+    ;;
+    ;;
+    MOV(R9, R1);;
+    ; MOV(R1, R2) FFG();
+    MOV(R9, R2); MOV(R2, R9); // 98
+
+    SUB(R0, R3, R2) FLG(!CF) STL(~+1);;
+    ; MOV(R2, R3) FFG();
+    MOV(R9, R3); MOV(R3, R9); // 101
+
+    SUB(R0, R4, R3) FLG(!CF) STL(~+1);;
+    ; MOV(R3, R4) FFG();
+    MOV(R9, R4); MOV(R4, R9); // 104
+
+    SUB(R0, R5, R4) FLG(!CF) STL(~+1);;
+    ; MOV(R4, R5) FFG();
+    ; MOV(R5, R9); // 107
+
+    /////// Fifth iteration
+
+    SUB(R0, R2, R1) FLG(!CF);; // 108
+    ;;
+    ;;
+    MOV(R9, R1);;
+    ; MOV(R1, R2) FFG();
+    MOV(R9, R2); MOV(R2, R9); // 113
+
+    SUB(R0, R3, R2) FLG(!CF) STL(~+1);;
+    ; MOV(R2, R3) FFG();
+    MOV(R9, R3); MOV(R3, R9); // 116
+
+    SUB(R0, R4, R3) FLG(!CF) STL(~+1);;
+    ; MOV(R3, R4) FFG();
+    ; MOV(R4, R9); // 119
+
+    /////// Sixth iteration
+
+    SUB(R0, R2, R1) FLG(!CF);; // 120
+    ;;
+    ;;
+    MOV(R9, R1);;
+    ; MOV(R1, R2) FFG();
+    MOV(R9, R2); MOV(R2, R9); // 125
+
+    SUB(R0, R3, R2) FLG(!CF) STL(~+1);; // 126
+    ; MOV(R2, R3) FFG();
+    ; MOV(R3, R9); // 128
+
+    /////// Seventh iteration
+
+    SUB(R0, R2, R1) FLG(!CF);; // 129
+    ;;
+    RET();;
+    MOV(R9, R1);;
+    ; MOV(R1, R2) FFG();
+    ; MOV(R2, R9); // 134
+
+.function2
+    ADD(R10, R10, 8);; // 135
+    MOV(SP, R10) RPT(.final);;
+.function2_loop
+    STR(R1);; // 137
+    MOV(SP, R10) STL(~+0) FLG(!CF);; // 138
+    ;;
+    ;;
+    LOD(R1);; // 141
+
+    SUB(R0, R2, R1) FLG(!CF);;
+    ;;
+    ;;
+    MOV(R9, R1);;
+    STL(.skip); MOV(R1, R2) FFG(); // 146
+    ; MOV(R2, R9);
+
+    SUB(R0, R3, R2) FLG(!CF) STL(~+1);;
+    STL(.skip); MOV(R2, R3) FFG();
+    ; MOV(R3, R9); // 150
+
+    SUB(R0, R4, R3) FLG(!CF) STL(~+1);;
+    STL(.skip); MOV(R3, R4) FFG();
+    ; MOV(R4, R9); // 153
+
+    SUB(R0, R5, R4) FLG(!CF) STL(~+1);;
+    STL(.skip); MOV(R4, R5) FFG();
+    ; MOV(R5, R9); // 156
+
+    SUB(R0, R6, R5) FLG(!CF) STL(~+1);;
+    STL(.skip); MOV(R5, R6) FFG();
+    ; MOV(R6, R9); // 159
+
+    SUB(R0, R7, R6) FLG(!CF) STL(~+1);;
+    STL(.skip); MOV(R6, R7) FFG();
+    ; MOV(R7, R9); // 162
+
+    SUB(R0, R8, R7) FLG(!CF) STL(~+1);;
+    ; MOV(R7, R8) FFG();
+    ; MOV(R8, R9); // 165
+
+.skip
+    SUB(R0, R10, 14) FLG(ZF);; // 166
+    INC(R10);;
+    ;;
+    ;;
+    JMP(.function2_loop);       SPT(7) STR(R1) FFG(); // 170
+    SUB(R10, R10, 8);           SPT(8) STR(R2) FFG();
+    ADD(R10, R10, 8);           SPT(9) STR(R3) FFG();
+    MOV(SP, R10);               SPT(10) STR(R4); // 173
+
+.end
+    SPT(11) STR(R5);; // 174
+    JMP(.function1);;
+    SPT(12) STR(R6);;
+    SPT(13) STR(R7);; // 177
+    SPT(14) STR(R8);; // 178
+
+.final
+    SPT(0) STR(R1);; // 179
+    SPT(1) STR(R2);;
+    SPT(2) STR(R3);;
+    SPT(3) STR(R4);; // 182
+    SPT(4) STR(R5);;
+    SPT(5) STR(R6);;
+    SPT(6) STR(R7);; // 185
+    SPT(7) STR(R8);;
+    HLT();; // 187
+
+

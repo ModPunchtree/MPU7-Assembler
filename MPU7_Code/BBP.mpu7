@@ -1,0 +1,161 @@
+
+// 256 / (8k + 1)
+// 128 / (8k + 4)
+//  64 / (8k + 5)
+//  64 / (8k + 6)
+
+// R1 = answer
+// R2 = intermediate
+// R3 = 8k
+
+@DEFINE answer R1
+@DEFINE intermediate R2
+@DEFINE 8k R3
+@DEFINE __quotent__ 130
+@DEFINE __remainder__ 131
+@DEFINE __rounded__ 132
+@DEFINE __divisor__ 130
+@DEFINE __dividendLow__ 131
+@DEFINE __dividendHigh__ 132
+@DEFINE secondDivisor R4
+@DEFINE lastDivisor R5
+@DEFINE lowAnswer R1
+@DEFINE highAnswer R2
+@DEFINE multLow 128
+@DEFINE multHigh 129
+@DEFINE ACFtoggle 154
+
+.setup
+    RST(@answer) RPT(.first);; // 0
+    MOV(@intermediate, !R0);; // 1
+    RST(@8k) JMP(.second);; // 2
+    SPT(@__divisor__) STR(R0);; // 3
+    IMM(@secondDivisor, 128);; // 4
+    IMM(@lastDivisor, 64);; // 5
+
+.first
+    ADC(SR, @8k, R0) SPT(@__divisor__);; // 6
+    STR(R0) SPT(@__dividendLow__);; // 7
+    ADC(SR, R0, R0) SPT(@__dividendHigh__);; // 8
+    ;; // 1 // 9
+    ;; // 2 // 10
+    ;; // 3 // 11
+    ;; // 4 // 12
+    ;; // 5 // 13
+    SPT(@__quotent__);; // 6 // 14
+    ;; // 7 // 15
+    ;; // 8 // 16
+    ;; // 9 // 17
+    ;; // 10 // 18
+    ;; // 11 // 19
+    LOD(@intermediate) SPT(@__divisor__);; // 20
+
+.second
+    ADD(SR, @8k, 4);; // 21
+    STR(@secondDivisor) SPT(@__dividendLow__);; // 22
+    STR(R0) SPT(@__dividendHigh__);; // 23
+    STR(R0) SPT(@ACFtoggle);; // 1 // 24
+    ;; // 2 // 25
+    ;; // 3 // 26
+    ;; // 4 // 27
+    ;; // 5 // 28
+    SPT(@__quotent__);; // 6 // 29
+    ;; // 7 // 30
+    ;; // 8 // 31
+    ;; // 9 // 32
+    ;; // 10 // 33
+    ;; // 11 // 34
+    ADC(@intermediate, !SR, @intermediate) SPT(@__divisor__);; // 35
+
+.third
+    ADD(SR, @8k, 5);; // 36
+    STR(@lastDivisor) SPT(@__dividendLow__);; // 37
+    JMP(~+3);; // 1 // 38
+    ;; // 2 // 39
+    ;; // 3 // 40
+    ;; // 4 // 41
+    ;; // 5 // 42
+    SPT(@__quotent__);; // 6 // 43
+    ;; // 7 // 44
+    ;; // 8 // 45
+    ;; // 9 // 46
+    ;; // 10 // 47
+    ;; // 11 // 48
+    ADC(@intermediate, !SR, @intermediate) SPT(@__divisor__);; // 49
+
+.fourth
+    ADD(SR, @8k, 6);; // 50
+    JMP(~+3);; // 1 // 51
+    ;; // 2 // 52
+    ;; // 3 // 53
+    ;; // 4 // 54
+    ;; // 5 // 55
+    SPT(@__quotent__);; // 6 // 56
+    ;; // 7 // 57
+    ;; // 8 // 58
+    ADD(@8k, 8);; // 9 // 59
+    ;; // 10 // 60
+    ;; // 11 // 61
+    ADC(@intermediate, !SR, @intermediate) RPT(.fixedToBase10);; // 62
+
+.fixedToBase10
+    // multiply by 125
+    // divide by 2
+    // multiply by 5
+    // divide by 2
+    // no rounding
+    
+    STR(@intermediate) SPT(@multLow);; // 63
+    SPT(@multHigh);; // 64
+    STR(125);; // 65
+    ;; // 1 // 66
+    ;; // 2 // 67
+    ;; // 3 // 68
+    ;; // 4 // 69
+    SPT(@multHigh);; // 5 // 70
+    ;; // 6 // 71
+    ;; // 7 // 72
+    SPT(@multLow);; // 8 // 73
+    ;; // 9 // 74
+    ;; // 10 // 75
+    LOD(R4) FLG(OD);; // 76
+    LOD(R3);; // 77
+
+    RSH(@highAnswer, R4);; // 78
+    RSH(@lowAnswer R3);; // 79
+    ; ADD(R3, 128); // 80
+
+    LSH(R3);; // 81
+    LSC(R4);; // 82
+    
+    ADC(@highAnswer, R4) FLG(OD);; // 83
+    ADD(@lowAnswer, R3);; // 84
+
+    RSH(@highAnswer);; // 85
+    RSH(@lowAnswer);; // 86
+    ; ADD(R3, 128); // 87
+
+.print
+    STR(@highAnswer) SPT(134);; // 88
+    STR(@lowAnswer) SPT(133);; // 89
+    IMM(R1, '.');; // 90
+    ;; // 91
+    ;; // 92
+    ;; // 93
+    ;; // 94
+    ;; // 95
+    ;; // 96
+    SPT(137);; // 97
+    ;; // 98
+    SPT(136);; // 99
+    PRT(SR) SPT(135);; // 100
+    PRT(R1) SPT(134);; // 101
+    PRT(SR) SPT(133);; // 102
+    PRT(SR);; // 103
+    PRT(SR);; // 104
+    PRT(SR);; // 105
+    HLT();; // 106
+
+
+
+

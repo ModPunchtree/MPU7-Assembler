@@ -1,0 +1,133 @@
+
+// R1 = x1
+// R2 = y1
+// R3 = dx
+// R4 = dy
+// R5 = sx
+// R6 = sy
+// R7 = error
+// R8 = e2
+// R9 = temp1
+// R10 = temp2
+
+// IMM = x2
+// IMM = y2
+
+@DEFINE x1 R1
+@DEFINE y1 R2
+@DEFINE dx R3
+@DEFINE dy R4
+@DEFINE sx R5
+@DEFINE sy R6
+@DEFINE error R7
+@DEFINE e2 R8
+@DEFINE temp1 R9 // x2
+@DEFINE temp2 R10 // y2
+@DEFINE x2reg R9
+@DEFINE y2reg R10
+
+// setup
+@DEFINE x2 5
+@DEFINE y2 9
+
+IMM(@x1, 25);; // 0
+IMM(@y1, 14);; // 1
+STR(@x2);; // 2
+SPT(1);; // 3
+STR(@y2);; // 4
+SPT(0);; // 5
+IMM(@x2reg, @x2);; // 6
+IMM(@y2reg, @y2);; // 7
+
+.bresy
+// abs(dx) and sign(dx)
+SUB(@dx, @x2reg, @x1) FLG(!CF);; // 8
+INC(@sx, R0);; // 9
+;; // 10
+;; // 11
+; SUB(@dx, @x1, @x2reg) FFG(); // 12
+; NEG(@sx); // 13
+
+// abs(dy) and sign(dy)
+SUB(@dy, @y2reg, @y1) FLG(!CF);; // 14
+INC(@sy, R0);; // 15
+;; // 16
+;; // 17
+SUB(@dy, @y1, @y2reg); FFG(); // 18
+; NEG(@sy);
+
+// preloop setup
+ADD(@error, @dx, @dy);;
+ADD(@dx, 128);;
+ADD(@dy, 128);;
+
+// main loop
+.mainLoop
+    // set macroX
+    RSH(@temp1, @x1);;
+    RSH(X, @temp1); HLT(); // X == macroX
+
+    // set macroY
+    RSH(@temp1, @y1);;
+    RSH(@temp1);;
+    RSH(Y, @temp1);; // Y = macroY
+
+    AND(@temp1, @y1, 0b111);; // temp1 == microY // 1
+    INC(@temp2, R0);; // temp2 = macro pixel column // 2
+    .microYLoop
+        DEC(@temp1) FLG(!CF);; // 3
+        DEC(@temp1) FLG(!CF);; // 4
+        DEC(@temp1) FLG(!CF);; // 5
+        DEC(@temp1) FLG(!CF);; // 6
+        LSH(@temp2) JMP(.microYLoop); STL(.escape); // 7 + 8, 9, 10
+        LSH(@temp2); STL(.escape); // 35
+        LSH(@temp2); STL(.escape);; // 36
+        LSH(@temp2); STL(.escape);; // 37
+
+    .escape
+    // get old pixels
+    AND(@temp1, @x1, 0b11);; // temp1 == microX // 11 // 38
+    STL(~+1);; // 12 + 13, 14, 15 // 39
+    ;; // 16 // 40
+    SPT(150);; // 17 // 41
+    ;; // 18 // 42
+    ADD(R0, R0, @temp1) FLG(ZF);; // 19 // 43
+    DEC(@temp1) FLG(ZF) SPT(151);; // 20 // 44
+    DEC(@temp1) FLG(ZF) SPT(152);; // 21 // 45
+    DEC(R0, @temp1) FLG(ZF) SPT(153);; // 22 // 46
+    ADD(SR, SR, R0) SPT(150); ADD(SR, SR, @temp2) SPT(150); // 47
+    ADD(SR, SR, R0) SPT(151); ADD(SR, SR, @temp2) SPT(151); // 48
+    ADD(SR, SR, R0) SPT(152); ADD(SR, SR, @temp2) SPT(152); // 49
+    ADD(SR, SR, R0) SPT(153); ADD(SR, SR, @temp2) SPT(153); // 50
+
+    // calculate e2
+    LSH(@e2, @error) SPT(0);; // 51
+    ADD(@e2, 128);; // 52
+
+    STR(R0) SPT(156);; // print custom char // 53
+
+    // if e2 >= dy
+    SUB(R0, @e2, @dy) FLG(!CF);; // 54
+    SPT(1);; // 55
+    ;; // 56
+    LOD(@x2reg);; // 57
+    SUB(R0, @x1, @x2reg) FLG(ZF); SUB(R0, @dx, @e2) FLG(!CF) JMP(.nextIf) FFG(); // if x1 == x2 HLT // 58
+    ADD(@error, @dy); FFG(); // 59
+    ADD(@error, 128); FFG(); // 60
+    ADD(@x1, @sx); LOD(@y2reg); // 61
+
+    // if e2 <= dx
+    SUB(R0, @dx, @e2) FLG(!CF); HLT(); // 62
+    ;; // 63
+    ;; // 64
+    LOD(@y2reg);; // 65
+    .nextIf
+    ADD(@error, @dx) JMP(.mainLoop); STL(.mainLoop); // if y1 == y2 HLT // 66
+    SUB(R0, @y1, @y2reg) FLG(ZF);; // 67
+    ADD(@error, 128);; // 68
+    ADD(@y1, @sy);; // 69
+
+
+
+
+
