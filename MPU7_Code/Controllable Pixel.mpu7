@@ -1,0 +1,28 @@
+
+// R1 = x
+// R2 = y
+
+.setup
+    IMM(R1, 3);;
+    IMM(R2, 3);;
+
+.print4x4
+    RSH(Y, R0, R2) FLG(CF);;
+    SETX(R1);;
+    ;;
+    ;;
+    PRT(124); PRT(125);
+
+.wait
+    STL(.wait) FLG(IN);;
+
+.read
+    ADD(R3, R0, IN) FLG(OD) CLR();;
+    RSH(R3) FLG(OD);;
+    RSH(R3) FLG(OD);;
+    RSH(R0, R3) FLG(OD);;
+    JMP(.print4x4); DEC(R1) JMP(.print4x4);
+    ; INC(R1);
+    ; DEC(R2);
+    ; INC(R2);
+

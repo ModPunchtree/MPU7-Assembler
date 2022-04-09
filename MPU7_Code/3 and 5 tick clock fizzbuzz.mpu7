@@ -1,0 +1,170 @@
+
+// fizzbuzz
+// R1 = value
+// R2 = three
+// R3 = five
+// R4 = answer
+
+
+// fizzbuzz - 3 delay slots (MPU 7)
+
+.setup3
+INC(R1, R0);;
+IMM(R2, 3);;
+IMM(R3, 5);;
+    
+.loop3
+DEC(R2) FLG(ZF);;
+;;
+DEC(R3) FLG(ZF);;
+;;
+RST(R4); IMM(R4, 0xF0) FFG();
+; IMM(R2, 3);
+ADD(R0, R4, R0) FLG(ZF); ADD(R4, 0x0B) FLG(ZF);
+JMP(.loop3) INC(R1);;
+;;
+;;
+PRT(R4); ADD(R0, R1, !R0);
+
+// 11 cycles per loop
+// 55 ticks per loop
+// 11 lines
+
+///////////////////////////////////////////////////////////////////////
+
+// fizzbuzz - 4 delay slots
+
+.setup4
+INC(R1, R0);;
+IMM(R2, 3);;
+IMM(R3, 5);;
+
+.loop4
+DEC(R2) FLG(ZF);;
+;;
+DEC(R3) FLG(ZF);;
+;;
+;;
+RST(R4); IMM(R4, 0xF0) FFG();
+; IMM(R2, 3);
+ADD(R0, R4, R0) FLG(ZF); ADD(R4, 0x0B) FLG(ZF);
+JMP(.loop4) INC(R1);;
+;;
+;;
+;;
+PRT(R4); ADD(R0, R1, !R0);
+
+// 13 cycles per loop
+// 65 ticks per loop
+// 13 lines
+
+///////////////////////////////////////////////////////////////////////
+
+// fizzbuzz - 7 delay slots + hazards
+.setup7
+INC(R1, R0);;
+IMM(R2, 3);;
+IMM(R3, 5);;
+
+.loop7
+DEC(R2) FLG(ZF);;
+;;
+DEC(R3) FLG(ZF);;
+;;
+;;
+;;
+;;
+;;
+RST(R4); IMM(R4, 0xF0) FFG();
+; IMM(R2, 3);
+ADD(R0, R4, R0) FLG(ZF); ADD(R4, 0x0B) FLG(ZF);
+JMP(.loop7) INC(R1);;
+;;
+;;
+;;
+;;
+;;
+;;
+PRT(R4); ADD(R0, R1, !R0);
+
+// 19 cycles per loop
+// 57 ticks per loop
+// 19 lines
+
+///////////////////////////////////////////////////////////////////////
+
+// fizzbuzz - 7 delay slots + hazards + 3 cycle quick stall
+.setup7
+    INC(R1, R0);;
+    IMM(R2, 3);;
+    IMM(R3, 5);;
+    
+    .loop7
+    DEC(R2) FLG(ZF) QSL(~+4);;
+    ;;
+    DEC(R3) FLG(ZF);;
+    ;;
+    RST(R4); IMM(R4, 0xF0) FFG();
+    ; IMM(R2, 3);
+    ADD(R0, R4, R0) FLG(ZF) QSL(~+4); ADD(R4, 0x0B) FLG(ZF) QSL(~+4);
+    JMP(.loop7) INC(R1);;
+    ;;
+    ;;
+    PRT(R4); ADD(R0, R1, !R0);
+    
+    // 19 cycles per loop
+    // 57 ticks per loop
+    // 11 lines
+
+///////////////////////////////////////////////////////////////////////
+
+// fizzbuzz - 7 delay slots + hazards + 2 cycle quick stall
+.setup7
+    INC(R1, R0);;
+    IMM(R2, 3);;
+    IMM(R3, 5);;
+    
+    .loop7
+    DEC(R2) FLG(ZF) QSL(~+3);;
+    ;;
+    DEC(R3) FLG(ZF);;
+    RST(R4); IMM(R4, 0xF0) FFG();
+    ; IMM(R2, 3);
+    ADD(R0, R4, R0) FLG(ZF) QSL(~+3); ADD(R4, 0x0B) FLG(ZF) QSL(~+3);
+    JMP(.loop7) INC(R1);;
+    ;;
+    PRT(R4); ADD(R0, R1, !R0);
+    
+    // 19 cycles per loop
+    // 57 ticks per loop
+    // 9 lines
+
+///////////////////////////////////////////////////////////////////////
+
+// fizzbuzz - 7 delay slots + hazards + 5 delay slot fast flag
+.setup7
+    INC(R1, R0) RPT(.loop7);;
+    IMM(R2, 3);;
+    IMM(R3, 5);;
+    
+    .loop7
+    DEC(R2) FLG(ZF);;
+    ;;
+    DEC(R3) FLG(ZF);;
+    ;;
+    ;;
+    ;;
+    RST(R4); IMM(R4, 0xF0) FFG();
+    RET(); IMM(R2, 3) RET();
+    ADD(R0, R4, R0) FLG(ZF); ADD(R4, 0x0B) FLG(ZF);
+    INC(R1);;
+    ;;
+    ;;
+    ;;
+    ;;
+    PRT(R4); ADD(R0, R1, !R0);
+    
+    // 15 cycles per loop
+    // 45 ticks per loop
+    // 15 lines
+

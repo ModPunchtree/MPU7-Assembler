@@ -1,0 +1,277 @@
+
+// R1 = x1
+// R2 = y1
+// R3 = dx
+// R4 = dy
+
+// R5 = sx
+// R6 = sy
+// R7 = gradient
+
+// R8 = accumulator and switchXY
+// R9 = temp1 and x2reg
+// R10 = temp2 and y2reg
+
+// M0 = x2
+// M1 = y2
+
+// dx = x2 - x1
+// sx = 1
+// if x2 < x1:
+//      dx = -dx
+//      sx = -sx
+
+// dy = y2 - y1
+// sy = 1
+// if y2 < y1:
+//      dy = -dy
+//      sy = -sy
+
+// plot x2, y2
+
+// .swapXY
+//      switchXY = 0
+//      if dy > dx:
+//          swap x1, y1
+//          swap x2, y2
+//          swap sx, sy
+//          swap dx, dy
+//          switchXY = !switchXY
+
+// gradient = (dy << 8) / dx
+// dx = switchXY
+// accumulator = 0
+
+// .loop
+//      if dx:
+//          plot y1, x1
+//      else:
+//          plot x1, y1
+
+//      if dy > dx:
+//          y1 += sy
+//          if y1 == y2:
+//              HLT
+//          accumulator += gradient
+//          if roll over: x1 += sx
+//      else:
+//          x1 += sx
+//          if x1 == x2:
+//              HLT
+//          accumulator += gradient
+//          if roll over: y1 += sy
+
+@DEFINE x1 R1
+@DEFINE y1 R2
+@DEFINE dx R3
+@DEFINE dy R4
+@DEFINE sx R5
+@DEFINE sy R6
+@DEFINE gradient R7
+@DEFINE accumulator R8
+@DEFINE temp1 R9
+@DEFINE temp2 R10
+
+@DEFINE switchXY R8
+@DEFINE x2reg R9
+@DEFINE y2reg R10
+
+.setup
+    IMM(@x1, 20);; // 0
+    IMM(@y1, 2);; // 1
+    STR(5);; // x2 // 2
+    SPT(1);; // 3
+    STR(9);; // y2 // 4
+    IMM(@x2reg, 5);; // x2 // 5
+    IMM(@y2reg, 9);; // y2 // 6
+    RPT(.line2);; // 7
+
+.lineDrawer
+    .calculateDx
+        SUB(@dx, @x2reg, @x1) FLG(!CF) SPT(0);; // 8
+        INC(@sx, R0);; // 9
+        ;; // 10
+        ;; // 11
+        ; NEG(@sx) FFG(); // 12
+        ; NEG(@dx); // 13
+
+    .calculateDy
+        SUB(@dy, @y2reg, @y1) FLG(!CF);; // 14
+        INC(@sy, R0);; // 15
+        ;; // 16
+        ;; // 17
+        ; NEG(@sy) FFG(); // 18
+        SPT(1); NEG(@dy) SPT(1); // 19
+
+    .prePrint
+        RSH(@accumulator, @x2reg);; // 20
+        RSH(X, @accumulator);; // 21
+
+        RSH(@accumulator, @y2reg);; // 22
+        RSH(@accumulator) JMP(~+3);; // 23
+        RSH(Y, @accumulator);; // 24
+
+        AND(@accumulator, @y2reg, 0b111);; // 25
+        INC(@temp2, R0) FFG(); NOT(@accumulator); // 26
+
+        .preMicroYLoop
+            DEC(@accumulator) FLG(!CF);; // 27
+            DEC(@accumulator) FLG(!CF);; // 28
+            DEC(@accumulator) FLG(!CF);; // 29
+            DEC(@accumulator) FLG(!CF);; // 30
+            LSH(@temp2) JMP(.preMicroYLoop); STL(.preEscape); // 31
+            LSH(@temp2); STL(.preEscape); // 32
+            LSH(@temp2); STL(.preEscape); // 33
+            LSH(@temp2); STL(.preEscape); // 34
+        
+        .preEscape
+            AND(@temp1, @x2reg, 0b11);; // 35
+            NOT(@temp1) STL(~+1);; // 36
+            ;; // 37
+            SPT(150);; // 38
+            ;; // 39
+            MOV(R0, @temp1) FLG(ZF);; // 40
+            DEC(@temp1) FLG(ZF) SPT(151);; // 41
+            DEC(@temp1) FLG(ZF) SPT(152);; // 42
+            DEC(R0, @temp1) FLG(ZF) SPT(153);; // 43
+            MOV(SR, SR) SPT(150); NOR(SR, SR, @temp2) SPT(150); // 44
+            MOV(SR, SR) SPT(151); NOR(SR, SR, @temp2) SPT(151); // 45
+            MOV(SR, SR) SPT(152); NOR(SR, SR, @temp2) SPT(152); // 46
+            MOV(SR, SR) SPT(153); NOR(SR, SR, @temp2) SPT(153); // 47
+            RST(@switchXY) SPT(1);; // 48
+
+    .swapXY
+        SUB(R0, @dx, @dy) FLG(!CF);; // 1 // 49
+        ;; // 2 // 50
+        MOV(@temp1, @x1);; // 3 // 51
+        MOV(@temp2, @sx);; // 4 // 52
+        JMP(~+9); STR(SR) FFG(); // 5 // 53
+        ; STR(SR) SPT(0) FFG(); // 54
+        ; MOV(@x1, @y1) FFG(); // 55
+        ; MOV(@y1, @temp1) FFG(); // 56
+        ; MOV(@sx, @sy) FFG(); // 57
+        ; MOV(@sy, @temp2) FFG(); // 58
+        ; MOV(@temp1, @dx) FFG() JMP(~+3); // 59
+        ; MOV(@dx, @dy) FFG(); // 60
+        ; MOV(@dy, @temp1) FFG(); // 61
+        STR(R0) SPT(156); NOT(@switchXY); // 62
+
+    .gradient
+        STR(@dy) SPT(132);; // 63
+        STR(@dx) SPT(130);; // 64
+        SUB(@dy, @dx, @dy) STL(~+1); RST(@accumulator) STL(~+1) FLG(!CF); // 1 + 2, 3, 4 // 5 + 6, 7, 8 // 65
+        MOV(@dx, @switchXY) STL(~-1) FLG(!CF);; // 9 + 10, 11, 12 // 13 // 66
+        LOD(@gradient);; // 67
+
+    .loop
+        .print
+            MOV(R0, @dx) FLG(!ZF);; // 68
+            ; STL(RET); // 69
+            ;; // 70
+            ;; // 71
+            .normalPrint
+                RSH(@temp1, @x1); STL(.invertedPrint); // 72
+                RSH(X, @temp1);; // 73
+
+                RSH(@temp1, @y1);; // 74
+                RSH(@temp1) JMP(~+3);; // 75
+                RSH(Y, @temp1);; // 76
+
+                AND(@temp1, @y1, 0b111);; // 77
+                INC(@temp2, R0) FFG(); NOT(@temp1); // 78
+
+                .normalMicroYLoop
+                    DEC(@temp1) FLG(!CF);; // 79
+                    DEC(@temp1) FLG(!CF);; // 80
+                    DEC(@temp1) FLG(!CF);; // 81
+                    DEC(@temp1) FLG(!CF);; // 82
+                    LSH(@temp2) JMP(.normalMicroYLoop); STL(.normalEscape); // 83
+                    LSH(@temp2); STL(.normalEscape); // 84
+                    LSH(@temp2); STL(.normalEscape); // 85
+                    LSH(@temp2); STL(.normalEscape); // 86
+
+                .normalEscape
+                    AND(@temp1, @x1, 0b11);; // 87
+                    NOT(@temp1) STL(~+1);; // 88
+                    ;; // 89
+                    SPT(150);; // 90
+                    ;; // 91
+                    ADD(R0, R0, @temp1) FLG(ZF);; // 92
+                    DEC(@temp1) FLG(ZF) SPT(151);; // 93
+                    DEC(@temp1) FLG(ZF) SPT(152);; // 94
+                    DEC(R0, @temp1) FLG(ZF) SPT(153);; // 95
+                    ADD(SR, SR, R0) SPT(150); NOR(SR, SR, @temp2) SPT(150); // 96
+                    ADD(SR, SR, R0) SPT(151); NOR(SR, SR, @temp2) SPT(151); // 97
+                    ADD(SR, SR, R0) SPT(152); NOR(SR, SR, @temp2) SPT(152); // 98
+                    ADD(SR, SR, R0) SPT(153); NOR(SR, SR, @temp2) SPT(153); // 99
+                    STL(.calculateNextCoord) FLG(!CF);; // 100
+
+            .invertedPrint
+                RSH(@temp1, @y1);; // 101
+                RSH(X, @temp1);; // 102
+
+                RSH(@temp1, @x1);; // 103
+                RSH(@temp1) JMP(~+3);; // 104
+                RSH(Y, @temp1);; // 105
+
+                AND(@temp1, @x1, 0b111);; // 106
+                INC(@temp2, R0) FFG(); NOT(@temp1); // 107
+
+                .invertedMicroYLoop
+                    DEC(@temp1) FLG(!CF);; // 108
+                    DEC(@temp1) FLG(!CF);; // 109
+                    DEC(@temp1) FLG(!CF);; // 110
+                    DEC(@temp1) FLG(!CF);; // 111
+                    LSH(@temp2) JMP(.invertedMicroYLoop); STL(.invertedEscape); // 112
+                    LSH(@temp2); STL(.invertedEscape); // 113
+                    LSH(@temp2); STL(.invertedEscape); // 114
+                    LSH(@temp2); STL(.invertedEscape); // 115
+
+                .invertedEscape
+                    AND(@temp1, @y1, 0b11);; // 116
+                    NOT(@temp1) STL(~+1);; // 117
+                    ;; // 118
+                    SPT(150);; // 119
+                    ;; // 120
+                    ADD(R0, R0, @temp1) FLG(ZF);; // 121
+                    DEC(@temp1) FLG(ZF) SPT(151);; // 122
+                    DEC(@temp1) FLG(ZF) SPT(152);; // 123
+                    DEC(R0, @temp1) FLG(ZF) SPT(153);; // 124
+                    ADD(SR, SR, R0) SPT(150); NOR(SR, SR, @temp2) SPT(150); // 125
+                    ADD(SR, SR, R0) SPT(151); NOR(SR, SR, @temp2) SPT(151); // 126
+                    ADD(SR, SR, R0) SPT(152); NOR(SR, SR, @temp2) SPT(152); // 127
+                    ADD(SR, SR, R0) SPT(153) FFG(); NOR(SR, SR, @temp2) SPT(153) FFG(); // 128
+
+        .calculateNextCoord
+            MOV(R0, @dy) FLG(NE) SPT(1)         ; STR(R0) SPT(156) FFG()                        ; // 129
+            SPT(0)                              ; STL(~-1)                                      ; // 1 // 130
+                                                ;                                               ; // 2 // 131
+                                                ;                                               ; // 3 // 132
+                                                ; ADD(@accumulator, @gradient) FLG(CF) FFG()    ; // 4 // 133
+            ADD(@accumulator, @gradient) FLG(CF); ADD(@y1, @sy) FFG() JMP(.loop)                ; // 5 // 134
+            ADD(@x1, @sx) JMP(.loop)            ; ADC(R0, !SR, @y1) FLG(ZF) FFG()               ; // 135
+            ADC(R0, !SR, @x1) FLG(ZF)           ;                                               ; // 136
+                                                ; ADD(@x1, @sx)                                 ; // 137
+                                                ; ADD(@y1, @sy)                                 ; // 138
+
+.line2
+    IMM(@x1, 25);; // 139
+    IMM(@y1, 14);; // 140
+    IMM(@x2reg, 5);; // x2 // 141
+    IMM(@y2reg, 9);; // y2 // 142
+    RPT(.line3);; // 143
+    STL(.lineDrawer);; // 144
+
+.line3
+    IMM(@x1, 20);; // 145
+    IMM(@y1, 2);; // 146
+    STR(25);; // x2 // 147
+    SPT(1);; // 148
+    STR(14);; // y2 // 149
+    IMM(@x2reg, 25);; // x2 // 150
+    IMM(@y2reg, 14);; // y2 // 151
+    RPT(.end);; // 152
+    STL(.lineDrawer);; // 153
+
+.end
+    HLT();; // 154

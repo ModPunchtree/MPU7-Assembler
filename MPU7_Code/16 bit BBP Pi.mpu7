@@ -1,0 +1,291 @@
+
+// ans = 0
+// 8k = 0
+// cycleH and cycleL = 0
+// skip first division
+
+// 65535 / 8k + 1
+// cycle = ^
+// 32768 / 8k + 4
+// cycle -= ^
+// 16384 / 8k + 5
+// cycle -= ^
+// 16384 / 8k + 6
+// cycle -= ^
+
+// cycle >>= (8k)/2
+
+// ans += cycle
+
+// if 8k == 24
+// 8k += 8
+//      next
+
+// fixed to int
+// do 1 step at a time and have a shift out reg
+// do 14 steps
+// round final value
+
+// convert to bcd
+// print
+
+@DEFINE ansLow R1
+@DEFINE ansHigh R2
+@DEFINE eightK R3
+@DEFINE cycleLow R4
+@DEFINE cycleHigh R5
+@DEFINE firstDividend !R0
+@DEFINE secondDividend R6
+@DEFINE thirdDividend R7
+@DEFINE fourthDividend R7
+@DEFINE tempHigh R8
+@DEFINE tempLow R9
+
+.setup
+    RST(@ansLow);; // 0
+    RST(@ansHigh);; // 1
+    RST(@eightK);; // 2
+    RST(@cycleLow);; // 3
+    RST(@cycleHigh) JMP(.second);; // 4
+    IMM(@secondDividend, 128);; // 5
+    IMM(@thirdDividend, 64);; // 6
+    STR(R0) SPT(154);; // 7
+
+.BBP
+    .first
+        ADC(SR, @eightK, R0) SPT(130);; // 8
+        STR(@firstDividend) SPT(131);; // 9
+        ;; // 1 // 10
+        ;; // 2 // 11
+        ;; // 3 // 12
+        ;; // 4 // 13
+        ;; // 5 // 14
+        ;; // 6 // 15
+        SPT(130);; // 7 // 16
+        ;; // 8 // 17
+        ;; // 9 // 18
+        ;; // 10 // 19
+        ;; // 11 // 20
+        ;; // 12 // 21
+        LOD(@cycleHigh) SPT(131);; // 22
+        ;; // 23
+        ;; // 24
+        ;; // 25
+        ;; // 26
+        ;; // 27
+        LOD(SR) SPT(132);; // dividendhigh = remainder // 28
+        ;; // 1 // 29
+        ;; // 2 // 30
+        ;; // 3 // 31
+        ;; // 4 // 32
+        ;; // 5 // 33
+        ;; // 6 // 34
+        ;; // 7 // 35
+        ;; // 8 // 36
+        STL(~+1);; // 9 // 37
+        ;; // 10 // 38
+        ;; // 11 // 39
+        ;; // 12 // 40
+        STR(R0);; // 13 // 41
+        LOD(@cycleLow);; // 42
+
+    .second
+        SPT(130);; // 43
+        ADD(SR, @eightK, 4);; // 44
+        STR(@secondDividend) SPT(131);; // 45
+        ;; // 1 // 46
+        ;; // 2 // 47
+        ;; // 3 // 48
+        ;; // 4 // 49
+        ;; // 5 // 50
+        ;; // 6 // 51
+        SPT(130);; // 7 // 52
+        ;; // 8 // 53
+        ;; // 9 // 54
+        ;; // 10 // 55
+        ;; // 11 // 56
+        ;; // 12 // 57
+        LOD(@tempHigh) SPT(131);; // 58
+        ;; // 59
+        ;; // 60
+        ;; // 61
+        ;; // 62
+        ;; // 63
+        LOD(SR) SPT(132);; // dividendhigh = remainder // 64
+        STR(R0) SPT(131);; // 65
+        ;; // 1 // 66
+        ;; // 2 // 67
+        ;; // 3 // 68
+        ;; // 4 // 69
+        ;; // 5 // 70
+        ;; // 6 // 71
+        ;; // 7 // 72
+        SPT(132);; // 8 // 73
+        STL(~+1);; // 9 // 74
+        ;; // 10 // 75
+        ;; // 11 // 76
+        ;; // 12 // 77
+        STR(R0);; // 13 // 78
+        LOD(@tempLow);; // 79
+        SUB(@cycleLow, @tempLow);; // 80
+        ACF(@cycleHigh, !R8);; // 81
+
+    .third
+        SPT(130);; // 82
+        ADD(SR, @eightK, 5);; // 83
+        STR(@thirdDividend) SPT(131);; // 84
+        ;; // 1 // 85
+        ;; // 2 // 86
+        ;; // 3 // 87
+        ;; // 4 // 88
+        ;; // 5 // 89
+        ;; // 6 // 90
+        SPT(130);; // 7 // 91
+        ;; // 8 // 92
+        ;; // 9 // 93
+        ;; // 10 // 94
+        ;; // 11 // 95
+        ;; // 12 // 96
+        LOD(@tempHigh) SPT(131);; // 97
+        ;; // 98
+        ;; // 99
+        ;; // 100
+        ;; // 101
+        ;; // 102
+        LOD(SR) SPT(132);; // dividendhigh = remainder // 103
+        STR(R0) SPT(131);; // 104
+        ;; // 1 // 105
+        ;; // 2 // 106
+        ;; // 3 // 107
+        ;; // 4 // 108
+        ;; // 5 // 109
+        ;; // 6 // 110
+        ;; // 7 // 111
+        SPT(132);; // 8 // 112
+        STL(~+1);; // 9 // 113
+        ;; // 10 // 114
+        ;; // 11 // 115
+        ;; // 12 // 116
+        STR(R0);; // 13 // 117
+        LOD(@tempLow);; // 118
+        SUB(@cycleLow, @tempLow);; // 119
+        ACF(@cycleHigh, !R8);; // 120
+
+    .fourth
+        SPT(130);; // 121
+        ADD(SR, @eightK, 6);; // 122
+        STR(@fourthDividend) SPT(131);; // 123
+        ;; // 1 // 124
+        ;; // 2 // 125
+        ;; // 3 // 126
+        ;; // 4 // 127
+        ;; // 5 // 128
+        ;; // 6 // 129
+        SPT(130);; // 7 // 130
+        ;; // 8 // 131
+        ;; // 9 // 132
+        ;; // 10 // 133
+        ;; // 11 // 134
+        ;; // 12 // 135
+        LOD(@tempHigh) SPT(131);; // 136
+        ;; // 137
+        ;; // 138
+        ;; // 139
+        ;; // 140
+        ;; // 141
+        LOD(SR) SPT(132);; // dividendhigh = remainder // 142
+        STR(R0) SPT(131);; // 143
+        ;; // 1 // 144
+        ;; // 2 // 145
+        ;; // 3 // 146
+        ;; // 4 // 147
+        ;; // 5 // 148
+        ;; // 6 // 149
+        ;; // 7 // 150
+        SPT(132);; // 8 // 151
+        STL(~+1);; // 9 // 152
+        ;; // 10 // 153
+        ;; // 11 // 154
+        STR(R0);; // 12 // 155
+        IMM(R10, 2);; // 13 // 156
+        LOD(@tempLow);; // 157
+        SUB(@cycleLow, @tempLow);; // 158
+        ACF(@cycleHigh, !R8);; // 159
+
+    .rightShift
+        SUB(@tempLow, @eightK, R10) FLG(!CF) STL(~+1);; // 160
+        .rightShiftLoop
+        RSH(@cycleHigh) FLG(CF) STL(~+1); STL(.endCycle); // 161
+        RSH(@cycleLow) FLG(CF); RSH(@cycleLow) FLG(CF) FFG(); // 162
+        ; ADD(@cycleLow, 128); // 163
+        SUB(@tempLow, R10) FLG(!CF) JMP(.rightShiftLoop);; // 164
+        ;; // 165
+        ; INC(@cycleLow); // 166
+        ACF(@cycleHigh, R0);; // 167
+
+        RSH(@cycleHigh) FLG(CF) STL(~+1);; // 168
+        RSH(@cycleLow) FLG(CF); RSH(@cycleLow) FLG(CF) FFG(); // 169
+        ; ADD(@cycleLow, 128); // 170
+        DEC(@tempLow) FLG(!CF) JMP(.rightShiftLoop);; // 171
+        ;; // 172
+        ; INC(@cycleLow); // 173
+        ACF(@cycleHigh, R0);; // 174
+        
+    .endCycle
+        ADD(@eightK, 8);; // 175
+        SUB(R0, @eightK, 24) FLG(ZF);; // 176
+        ADD(@ansLow, @cycleLow);; // 
+        ACF(@ansHigh, @cycleHigh);; // 
+        ;; // 179
+        STL(.BBP);; // 180
+
+@DEFINE carryOut R3
+@DEFINE iterations R4
+.fixedToInt
+    RST(@carryOut);; // 181 // B5
+    IMM(@iterations, 14);; // 182 // B6
+
+    .tryMultByFiveElseDivTwo
+        LSH(@tempLow, @ansLow);; // 183 // B7
+        ACF(@tempHigh, @ansHigh, @ansHigh) FLG(CF);; // 184 // B8
+        LSH(@tempLow);; // 185 // B9
+        ACF(@tempHigh, @tempHigh, @tempHigh) FLG(CF);; // 186 // BA
+        ADD(@tempLow, @ansLow);; // 187 // BB
+        ACF(@tempHigh, @ansHigh) FLG(CF); FFG(); // 188 // BC
+        ; FFG(); // 189 // BD
+        ; FFG(); // 190 // BE
+        ; FFG(); // 191 // BF
+        ADD(@ansLow, @tempLow, @carryOut) JMP(.endFixedToInt); RSH(@ansHigh) FLG(CF) FFG(); // 192 // C0
+        ACF(@ansHigh, R0, @tempHigh) FFG(); RSH(@ansLow) FLG(CF); // 193 // C1
+        
+        RSH(@carryOut); RST(@carryOut) FFG(); // 194 // C2
+        ;; // 195 // C3
+        ; ADD(@ansLow, 128); // 196 // C4
+        ; ADD(@carryOut, 2); // 197 // C5
+
+    .endFixedToInt
+        DEC(@iterations) FLG(ZF) STL(~+1);; // 198 // C6
+        STL(.tryMultByFiveElseDivTwo); RSH(@carryOut); // 199 // C7
+        ADD(@ansLow, @carryOut);; // 200 // C8
+
+.print
+    STR(@ansHigh) SPT(134);; // 201
+    STR(@ansLow) SPT(133);; // 202
+    IMM(R1, '.');; // 203
+    ;; // 204
+    ;; // 205
+    ;; // 206
+    ;; // 207
+    ;; // 208
+    ;; // 209
+    SPT(137);; // 210
+    ;; // 211
+    SPT(136);; // 212
+    PRT(SR) SPT(135);; // 213
+    PRT(R1) SPT(134);; // 214
+    PRT(SR) SPT(133);; // 215
+    PRT(SR);; // 216
+    PRT(SR);; // 217
+    PRT(SR);; // 218
+    HLT();; // 219
+

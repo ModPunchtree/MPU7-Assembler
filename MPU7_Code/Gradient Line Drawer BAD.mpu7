@@ -1,0 +1,110 @@
+
+// R1 = x1
+// R2 = y1
+// R3 = dx
+// R4 = dy
+
+// R5 = sx
+// R6 = sy
+// R7 = gradient
+
+// R8 = accumulator
+// R9 = temp1 and x2reg
+
+// R10 = temp2 and y2reg
+
+// dx = x2 - x1
+// sx = 1 /////////////////////////////////////////////////
+// if x2 < x1: /////////////////////////////////////////////////
+//      dx = -dx /////////////////////////////////////////////////
+//      sx = -sx /////////////////////////////////////////////////
+
+// dy = y2 - y1
+// sy = 1 /////////////////////////////////////////////////
+// if y2 > y1:
+//      dy = -dy
+//      sy = -sy /////////////////////////////////////////////////
+
+// plot x2, y2 /////////////////////////////////////////////////
+
+// gradient = (dy << 8) / dx
+// accumulator = 0
+
+// .loop
+//      plot x1, y1
+//      if dy > dx:
+//          y1 += sy
+//          if y1 == y2:
+//              HLT
+//          accumulator += gradient
+//          if roll over: x1 += sx
+//      else:
+//          x1 += sx
+//          if x1 == x2:
+//              HLT
+//          accumulator += gradient
+//          if roll over: y1 += sy
+
+
+@DEFINE x1 R1
+@DEFINE y1 R2
+@DEFINE x2 R3
+@DEFINE y2 R4
+
+@DEFINE dy R5
+@DEFINE dx R6
+@DEFINE gradient R7
+
+@DEFINE switchXY R8
+@DEFINE yDirection R9
+
+@DEFINE accumulator R10
+
+.setup
+    IMM(@x1, 1);;
+    IMM(@y1, 6);;
+    IMM(@x2, 3);;
+    IMM(@y2, 1);;
+    NOP();;
+
+.calculateDx
+    SUB(@dx, @x2, @x1) FLG(!CF) STL(~+1);;
+    SUB(@dy, @y2, @y1) FLG(!CF); NEG(@dx) FFG() JMP(~+0);
+    RST(@switchXY); MOV(@accumulator, @x1) FFG();
+    ; MOV(@x1, @x2) FFG();
+    ; MOV(@x2, @accumulator);
+
+.calculateDy
+    ; NEG(@dy);
+
+.swapXY
+    SUB(R0, @dx, @dy) FLG(!CF) STL(~+1);;
+    STR(@dy) SPT(132); NEG(@switchXY) FFG();
+    STR(@dx) SPT(130); MOV(@accumulator, @x1) FFG();
+    RST(@accumulator); MOV(@x1, @x2) FFG(); // 1
+    ; MOV(@x2, @accumulator) FFG(); // 2
+    ; MOV(@accumulator, @y1) FFG(); // 3
+    ; MOV(@y1, @y2) FFG() JMP(~-5); // 4
+    ; MOV(@y2, @accumulator) FFG(); // 5
+    ; MOV(@dx, @dy) FFG(); // 6
+    SPT(132); SUB(@dy, @y2, @y1); // 7
+
+.gradient
+    STL(~+0) FLG(!CF);; // 8 + 9, 10, 11 // 12
+    ;; // 13
+    LOD(@gradient);;
+
+.loop
+    .print
+        MOV(R0, @switchXY) FLG(!ZF) STL(~+1); HLT();
+        RSH(Y, @y1) FLG(CF); RSH(Y, @x1) FLG(CF) FFG();
+        ADD(@accumulator, @gradient) FLG(CF); ADD(@accumulator, @gradient) FLG(CF) FFG();
+        SETX(@x1); SETX(@y1);
+        INC(@x1);;
+        PRT(124); PRT(125);
+
+    .nextCoord
+        ; INC(@y1);
+        SUB(R0, @x2, @x1) FLG(!CF) STL(.loop);;
+
+

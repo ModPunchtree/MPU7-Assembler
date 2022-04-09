@@ -1,27 +1,95 @@
 
-// 4x4 pixels
-// 0 == 127
-// 1 == 124 /////
-// 2 == 125 /////
-// 3 == 126
+@DEFINE eightK R0
+@DEFINE fourthDividend R1
+@DEFINE tempHH R10
+@DEFINE tempHL R9
+@DEFINE tempLH R8
+@DEFINE tempLL R7
 
-// y = 3 bit
-// x = 4 bit
+SPT(130);;
+ADD(SR, @eightK, 6);;
+STR(@fourthDividend) SPT(131);;
+;; // 1
+;; // 2
+;; // 3
+;; // 4
+;; // 5
+;; // 6
+SPT(130);; // 7
+;; // 8
+;; // 9
+;; // 10
+;; // 11
+;; // 12
+LOD(@tempHH) SPT(131);;
+;;
+;;
+;;
+;;
+;;
+LOD(SR) SPT(132);; // dividendhigh = remainder
+STR(R0) SPT(131);;
+;; // 1
+;; // 2
+;; // 3
+;; // 4
+;; // 5
+;; // 6
+;; // 7
+;; // 8
+SPT(130);; // 9
+;; // 10
+;; // 11
+;; // 12
+;; // 13
+;; // 14
+LOD(@tempHL) SPT(131);;
+;;
+;;
+;;
+;;
+;;
+LOD(SR) SPT(132);; // dividendhigh = remainder
+;; // 1
+;; // 2
+;; // 3
+;; // 4
+;; // 5
+;; // 6
+;; // 7
+;; // 8
+;; // 9
+;; // 10
+;; // 11
+;; // 12
+;; // 13
+;; // 14
+LOD(@tempLH) SPT(131);;
+;;
+;;
+;;
+;;
+;;
+LOD(SR) SPT(132);; // dividendhigh = remainder
+;; // 1
+;; // 2
+;; // 3
+;; // 4
+;; // 5
+;; // 6
+;; // 7
+;; // 8
+SPT(132);; // 9
+;; // 10
+;; // 11
+;; // 12
+;; // 13
+STR(R0);; // 14
+LOD(@tempLL);;
+HLT();;
 
-// R1 = x
-// R2 = y
-// R10 = temp
 
-.setup
-    IMM(R1, 5);;
-    IMM(R2, 2);;
 
-.print4x4
-    RSH(Y, R0, R2) FLG(CF);;
-    SETX(R1);;
-    ;;
-    ;;
-    PRT(124); PRT(125);
-    HLT();;
+
 
 

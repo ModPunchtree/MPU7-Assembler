@@ -1,0 +1,47 @@
+
+STR(R0) SPT(136);; // number = 0,008,881,797 (32 bit)
+STR(135) SPT(135);; // 1
+STR(134) SPT(134);; // 2
+STR(133) SPT(133);; // 3
+;; // 4
+;; // 5
+;; // 6
+;; // 7
+;; // 8
+;; // 9
+;; // 10
+;; // 11
+;; // 12
+;; // 13
+;; // 14
+SPT(142);; // 15
+SPT(141);; // 16
+RST(R10) SPT(140);; // 17
+MOV(R0, SR) FLG(!ZF) SPT(139);; // 18
+MOV(R0, SR) FLG(!ZF) SPT(138);;
+MOV(R0, SR) FLG(!ZF) SPT(137);;
+MOV(R0, SR) FLG(!ZF) SPT(136);;
+MOV(R0, SR) FLG(!ZF) SPT(135); INC(R10) FFG();
+MOV(R0, SR) FLG(!ZF) SPT(134); INC(R10) FFG();
+MOV(R0, SR) FLG(!ZF); INC(R10) FFG();
+MOV(R0, SR) FLG(!ZF); INC(R10) FFG();
+MOV(R0, SR) FLG(!ZF); INC(R10) FFG();
+; INC(R10) FFG();
+; INC(R10) FFG();
+; INC(R10) FFG();
+; INC(R10);
+
+.print
+    ADD(R10, 133);;
+    DEC(R10);;
+    ADD(SP, R10, R0);;
+    ;;
+    ;;
+    ;;
+    SUB(R0, R10, 132) FLG(ZF);;
+    DEC(R10);;
+    ADD(SP, R10, R0) JMP(~-2);;
+    PRT(SR);;
+    ; HLT();
+    ;;
+

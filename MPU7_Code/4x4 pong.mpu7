@@ -1,6 +1,61 @@
 
+// disable cursor
+// screen size = 14 x 8
+// 2 <= x <= 15
+// 0 <= y <= 7
 
+// R1 = x
+// R2 = y
+// R3 = dx
+// R4 = dy
 
+@DEFINE x R1
+@DEFINE y R2
+@DEFINE dx R3
+@DEFINE dy R4
+
+.setup
+    IMM(@x, 2);; // 0
+    ADD(@y, R0, R0) SPT(145);; // 1
+    INC(@dx, R0);; // 2
+    INC(@dy, R0);; // 3
+    STR(1);; // 4
+
+.updateYPosition
+    ADD(@y, @dy) FLG(NE);; // 5
+    SUB(R0, @y, 8) FLG(CF);; // 6
+    ADD(@x, @dx);; // 7
+    ;; // 8
+    ; FFG(); // 9
+    ; NEG(@dy) FFG(); // 10
+
+.updateXPosition
+    SUB(R0, @x, 16) FLG(CF); SUB(R0, @x, 16) FLG(CF) FFG(); // 11
+    SUB(R0, @x, 2) FLG(!CF); SUB(R0, @x, 2) FLG(!CF) FFG(); // 12
+    ; ADD(@y, @dy) FFG(); // 13
+    ; ADD(@y, @dy); // 14
+    RSH(R5, @y); RSH(R5, @y) FFG(); // 15
+    ; NEG(@dx) FFG(); // 16
+    ; ADD(@x, @dx) FFG(); // 17
+    ; ADD(@x, @dx); // 18
+
+.print4x4AndPaddle
+    RSH(Y, R0, @y) FLG(CF);; // 19
+    ADC(X, R0, R0);; // 20
+    PRT(126);; // 21
+    SETX(@x);; // 22
+    PRT(124); PRT(125) FFG(); // 23
+    DEC(Y, R5); INC(Y, R5) FFG(); // 24
+    ADC(X, R0, R0); ADC(X, R0, R0) FFG(); // 25
+    PRT(125); PRT(124); // 26
+    STL(~+1);; // 27
+    STL(~+1);; // 28
+    ;; // 29
+    ;; // 30
+    JMP(.updateYPosition);; // 31
+    ;; // 32
+    ADC(SR, R0, R0);; // update buffer // 33
+    STR(R0) CLR();; // 34
 
 
 

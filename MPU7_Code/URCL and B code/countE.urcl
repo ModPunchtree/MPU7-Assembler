@@ -1,0 +1,23 @@
+
+BITS == 32
+
+.array
+DW [5 'a' 'b' 'c' 'd' 'e' 'e' 'f']
+IMM R1 0
+LOD R2 .array
+
+BRZ .end R2
+ADD R2 R2 .array
+
+.loop
+LOD R3 R2
+SETE R3 R3 'e'
+ADD R1 R1 R3
+DEC R2 R2
+BNE .loop R2 .array
+
+.end
+NEG R1 R1
+OUT %int R1
+HLT
+

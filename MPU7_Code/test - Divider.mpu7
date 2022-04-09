@@ -22,7 +22,7 @@ SPT(130);; // 7
 LOD(R1);;
 HLT();;
 
-
+// add 1 clock cycle if rounded answer is read
 
 
 

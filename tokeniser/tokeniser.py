@@ -33,10 +33,10 @@ def tokenise(rawCode: str) -> list:
                 text = line[char]
                 char += 1
                 if char < len(line):
-                    if (text == "'") and (line[char] in (" ", "!", ":", ";", "%", "#", "'", "~", "(", ")", "{", "}", "[", "]", "<", ">", "?", "/", "\\", "£", "$", "€", "^", "&", "=", "_", "|")):
+                    if (text == "'") and (line[char] in (" ", "!", ":", ";", "%", "#", "'", "~", "(", ")", "{", "}", "[", "]", "<", ">", "?", "/", "\\", "£", "$", "€", "^", "&", "=", "_", "|", "@")):
                         text += line[char]
                         char += 1
-                    while line[char].isalnum() or line[char] in ("+", "-", "'", "_", "."):
+                    while line[char].isalnum() or line[char] in ("+", "-", "'", "_", ".", "*", "/"):
                         text += line[char]
                         char += 1
                         if char >= len(line):
@@ -71,7 +71,7 @@ def tokenise(rawCode: str) -> list:
                     pointer = lineNumber
                     while number > 0:
                         pointer -= 1
-                        while code[pointer].startswith("."):
+                        while code[pointer][0].startswith("."):
                             pointer -= 1
                         number -= 1
                     code[lineNumber][tokenNumber] = f".relativeLabel{uniqueNumber}"

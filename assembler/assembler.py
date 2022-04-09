@@ -251,7 +251,7 @@ def assemble(code: list) -> list:
                 # fix R0 inverts
                 if operand2 in ("R0", "CLR", "VSH", "HLT"):
                     instructionROM[flag][lineNumber][18] = 1 - instructionROM[flag][lineNumber][18]
-                if operand3 in ("R0", "DS", "DSW"):
+                if operand3 in ("R0", "DS", "DSW", "IN"):
                     instructionROM[flag][lineNumber][17] = 1 - instructionROM[flag][lineNumber][17]
                 
                 tokenNumber += 2
