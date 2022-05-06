@@ -1,0 +1,45 @@
+
+// R1 = number
+// R2 = three counter
+// R3 = five counter
+// R4 = fizzbuzz
+
+IMM R1 0
+IMM R2 3
+IMM R3 5
+
+.loop
+    IMM R4 0
+    INC R1 R1
+
+    DEC R2 R2
+    BNZ ~+3 R2
+    ADD R4 R4 128 // fizz
+    IMM R2 3
+
+    DEC R3 R3
+    BNZ ~+3 R3
+    ADD R4 R4 1 // buzz
+    IMM R3 5
+
+    BRN .drawfib R4
+    BOD .drawbuzz R4
+
+    OUT %NUMB R1
+    JMP .loop
+
+    .drawfib
+        OUT %TEXT '\n'
+        OUT %TEXT 'F'
+        OUT %TEXT 'i'
+        OUT %TEXT 'z'
+        OUT %TEXT 'z'
+        BEV .loop R4
+        JMP ~+2
+    .drawbuzz
+        OUT %TEXT '\n'
+        OUT %TEXT 'B'
+        OUT %TEXT 'u'
+        OUT %TEXT 'z'
+        OUT %TEXT 'z'
+        JMP .loop

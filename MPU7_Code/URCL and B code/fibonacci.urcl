@@ -1,0 +1,16 @@
+
+.fibonacci
+    .setup
+        IMM R1 0
+        OUT %NUMB R1
+        IMM R2 1
+        
+    .loop
+        OUT %NUMB R2
+        ADD R1 R2 R1
+        BRL .end R1 R2
+        OUT %NUMB R1
+        ADD R2 R1 R2
+        BRG .loop R2 R1
+    .end
+        HLT

@@ -1,95 +1,179 @@
-
-@DEFINE eightK R0
-@DEFINE fourthDividend R1
-@DEFINE tempHH R10
-@DEFINE tempHL R9
-@DEFINE tempLH R8
-@DEFINE tempLL R7
-
-SPT(130);;
-ADD(SR, @eightK, 6);;
-STR(@fourthDividend) SPT(131);;
-;; // 1
-;; // 2
-;; // 3
-;; // 4
-;; // 5
-;; // 6
-SPT(130);; // 7
-;; // 8
-;; // 9
-;; // 10
-;; // 11
-;; // 12
-LOD(@tempHH) SPT(131);;
-;;
-;;
-;;
-;;
-;;
-LOD(SR) SPT(132);; // dividendhigh = remainder
-STR(R0) SPT(131);;
-;; // 1
-;; // 2
-;; // 3
-;; // 4
-;; // 5
-;; // 6
-;; // 7
-;; // 8
-SPT(130);; // 9
-;; // 10
-;; // 11
-;; // 12
-;; // 13
-;; // 14
-LOD(@tempHL) SPT(131);;
-;;
-;;
-;;
-;;
-;;
-LOD(SR) SPT(132);; // dividendhigh = remainder
-;; // 1
-;; // 2
-;; // 3
-;; // 4
-;; // 5
-;; // 6
-;; // 7
-;; // 8
-;; // 9
-;; // 10
-;; // 11
-;; // 12
-;; // 13
-;; // 14
-LOD(@tempLH) SPT(131);;
-;;
-;;
-;;
-;;
-;;
-LOD(SR) SPT(132);; // dividendhigh = remainder
-;; // 1
-;; // 2
-;; // 3
-;; // 4
-;; // 5
-;; // 6
-;; // 7
-;; // 8
-SPT(132);; // 9
-;; // 10
-;; // 11
-;; // 12
-;; // 13
-STR(R0);; // 14
-LOD(@tempLL);;
+IMM(R10, 128);;
+// OUT %TEXT 'A'
+PRT('A');;
+// OUT %TEXT 'c'
+PRT('c');;
+// OUT %TEXT 'c'
+PRT('c');;
+// OUT %TEXT 'o'
+PRT('o');;
+// OUT %TEXT 'r'
+PRT('r');;
+// OUT %TEXT 'd'
+PRT('d');;
+// OUT %TEXT 'i'
+PRT('i');;
+// OUT %TEXT 'n'
+PRT('n');;
+// OUT %TEXT 'g'
+PRT('g');;
+// OUT %TEXT ' '
+PRT(' ');;
+// OUT %TEXT 't'
+PRT('t');;
+// OUT %TEXT 'o'
+PRT('o');;
+// OUT %TEXT ' '
+PRT(' ');;
+// OUT %TEXT 'a'
+PRT('a');;
+// OUT %TEXT 'l'
+PRT('l');;
+// OUT %TEXT 'l'
+PRT('l');;
+// OUT %TEXT ' '
+PRT(' ');;
+// OUT %TEXT 'k'
+PRT('k');;
+// OUT %TEXT 'n'
+PRT('n');;
+// OUT %TEXT 'o'
+PRT('o');;
+// OUT %TEXT 'w0'
+PRT('w0');;
+// OUT %TEXT 'w1'
+PRT('w1');;
+// OUT %TEXT 'n'
+PRT('n');;
+// OUT %TEXT ' '
+PRT(' ');;
+// OUT %TEXT 'l'
+PRT('l');;
+// OUT %TEXT 'a'
+PRT('a');;
+// OUT %TEXT 'w0'
+PRT('w0');;
+// OUT %TEXT 'w1'
+PRT('w1');;
+// OUT %TEXT 's'
+PRT('s');;
+// OUT %TEXT ' '
+PRT(' ');;
+// OUT %TEXT 'o'
+PRT('o');;
+// OUT %TEXT 'f'
+PRT('f');;
+// OUT %TEXT ' '
+PRT(' ');;
+// OUT %TEXT 'a'
+PRT('a');;
+// OUT %TEXT 'v'
+PRT('v');;
+// OUT %TEXT 'i'
+PRT('i');;
+// OUT %TEXT 'a'
+PRT('a');;
+// OUT %TEXT 't'
+PRT('t');;
+// OUT %TEXT 'i'
+PRT('i');;
+// OUT %TEXT 'o'
+PRT('o');;
+// OUT %TEXT 'n'
+PRT('n');;
+// OUT %TEXT ','
+PRT(',');;
+// OUT %TEXT ' '
+PRT(' ');;
+// OUT %TEXT 't'
+PRT('t');;
+// OUT %TEXT 'h'
+PRT('h');;
+// OUT %TEXT 'e'
+PRT('e');;
+// OUT %TEXT 'r'
+PRT('r');;
+// OUT %TEXT 'e'
+PRT('e');;
+// OUT %TEXT ' '
+PRT(' ');;
+// OUT %TEXT 'i'
+PRT('i');;
+// OUT %TEXT 's'
+PRT('s');;
+// OUT %TEXT ' '
+PRT(' ');;
+// OUT %TEXT 'n'
+PRT('n');;
+// OUT %TEXT 'o'
+PRT('o');;
+// OUT %TEXT ' '
+PRT(' ');;
+// OUT %TEXT 'w0'
+PRT('w0');;
+// OUT %TEXT 'w1'
+PRT('w1');;
+// OUT %TEXT 'a'
+PRT('a');;
+// OUT %TEXT 'y'
+PRT('y');;
+// OUT %TEXT ' '
+PRT(' ');;
+// OUT %TEXT 'a'
+PRT('a');;
+// OUT %TEXT ' '
+PRT(' ');;
+// OUT %TEXT 'b'
+PRT('b');;
+// OUT %TEXT 'e'
+PRT('e');;
+// OUT %TEXT 'e'
+PRT('e');;
+// OUT %TEXT ' '
+PRT(' ');;
+// OUT %TEXT 's'
+PRT('s');;
+// OUT %TEXT 'h'
+PRT('h');;
+// OUT %TEXT 'o'
+PRT('o');;
+// OUT %TEXT 'u'
+PRT('u');;
+// OUT %TEXT 'l'
+PRT('l');;
+// OUT %TEXT 'd'
+PRT('d');;
+// OUT %TEXT ' '
+PRT(' ');;
+// OUT %TEXT 'b'
+PRT('b');;
+// OUT %TEXT 'e'
+PRT('e');;
+// OUT %TEXT ' '
+PRT(' ');;
+// OUT %TEXT 'a'
+PRT('a');;
+// OUT %TEXT 'b'
+PRT('b');;
+// OUT %TEXT 'l'
+PRT('l');;
+// OUT %TEXT 'e'
+PRT('e');;
+// OUT %TEXT ' '
+PRT(' ');;
+// OUT %TEXT 't'
+PRT('t');;
+// OUT %TEXT 'o'
+PRT('o');;
+// OUT %TEXT ' '
+PRT(' ');;
+// OUT %TEXT 'f'
+PRT('f');;
+// OUT %TEXT 'l'
+PRT('l');;
+// OUT %TEXT 'y'
+PRT('y');;
+// OUT %TEXT '.'
+PRT('.');;
+// HLT
 HLT();;
-
-
-
-
-
-

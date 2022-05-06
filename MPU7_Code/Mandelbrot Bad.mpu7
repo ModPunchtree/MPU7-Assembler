@@ -1,0 +1,475 @@
+
+// 4x4 pixels
+// 8x7 total size
+// 8x4 calculated - rest is mirrored
+
+// 9 iterations per pixel
+// on = diverge
+// off = converge
+
+// 16 bit mult
+// 8 bit between iterations
+// 000.00000
+
+
+//  setup:
+//      x table:
+//          M0 = 208
+//          M1 = 217
+//          M2 = 225
+//          M3 = 234
+//          M4 = 243
+//          M5 = 251
+//          M6 = 4
+//          M7 = 13
+
+//      y table:
+//          M8 = 224
+//          M9 = 235
+//          M10 = 245
+//          M11 = 0
+
+//  x = 0
+//  y = 0
+//  maxIterations = 9
+
+//  iteratePixel:
+//      fetchCoords:
+//          originalX = (x)
+//          originalY = (y + 8)
+//          zr = originalX
+//          zi = originalY
+//          iterations = 0
+
+//          originalXupper = 0
+//          if originalX is neg:
+//              originalXupper = 255
+//          originalYupper = 0
+//          if originalY is neg:
+//              originalYupper = 255
+
+//      loop:
+//          calc abszi
+//          calc abszr
+//          zi2 = abszi * abszr (16 bit result)
+//          zi2 = zi2 >> 4 (16 bit shift)
+//          if zi2upper != 0:
+//              diverge
+
+//          zi2sign = zi & 128
+//          temp = zr & 128
+//          zi2sign += temp
+
+//          if zi2sign is negative:
+//              zi2 = -zi2 (16 bit negation)
+
+//          zi2 += originalY (16 bit addition with sign extention)
+
+//          zi2sign = zi2Lower & 128
+//          temp = zi2Higher & 128
+//          if zi2sign != temp:
+//              diverge
+
+//          zr2 = abszr * abszr (16 bit result)
+//          zr2 = zr2 >> 4 (16 bit shift)
+//          zr2 = zr2 >> 1 (rounded)
+
+//          temp -= abszi * abszi (16 bit result)
+//          temp = temp >> 4 (16 bit shift)
+//          temp = temp >> 1 (rounded)
+
+//          zr2 -= temp (16 bit subtraction)
+
+//          zr2sign = zr2Lower & 128
+//          temp = zr2Higher & 128
+//          if zr2sign != temp:
+//              diverge
+
+//          zr2 += originalX (16 bit addition with sign extention)
+
+//          zr2sign = zr2Lower & 128
+//          temp = zr2Higher & 128
+//          if zr2sign != temp:
+//              diverge
+
+//          zr = zr2Lower
+//          zi = zi2Lower
+
+//          iteration += 1
+//          if iteration == 9:
+//              converge
+//          else:
+//              goto loop
+
+//      diverge:
+//          plot pixel using current x and y
+//          temp = 6 - y
+//          plot pixel using current x and temp
+//          (make sure that ploting the same pixel twice doesnt break things)
+//          (or dont plot second pixel if y == 3)
+//          goto nextPixel
+
+//      converge:
+//          goto nextPixel
+
+//      nextPixel:
+//          x += 1
+//          if x == 8:
+//              x = 0
+//              y += 1
+//              if y = 4:
+//                  HLT
+//          goto iteratePixel
+
+@DEFINE x R1
+@DEFINE y R2
+@DEFINE originalX R1
+@DEFINE originalY R2
+@DEFINE iteration R3
+
+@DEFINE zr R4
+@DEFINE zi R5
+@DEFINE abszr R4
+@DEFINE abszi R5
+
+@DEFINE zi2Lower R6
+@DEFINE zi2Higher R7 ////////////////////////////
+@DEFINE zr2Lower R8
+@DEFINE zr2Higher R9
+
+@DEFINE tempLow R10 //////////////////
+
+//  setup:
+.setup
+//      x table:
+//          M0 = 208
+//          M1 = 217
+//          M2 = 225
+//          M3 = 234
+//          M4 = 243
+//          M5 = 251
+//          M6 = 4
+//          M7 = 13
+    STR(208);;
+    SPT(1);;
+    STR(217);;
+    SPT(2);;
+    STR(225);;
+    SPT(3);;
+    STR(234);;
+    SPT(4);;
+    STR(243);;
+    SPT(5);;
+    STR(251);;
+    SPT(6);;
+    STR(4);;
+    SPT(7);;
+    STR(13);;
+
+//      y table:
+//          M8 = 224
+//          M9 = 235
+//          M10 = 245
+//          M11 = 0
+    SPT(8);;
+    STR(224);;
+    SPT(9);;
+    STR(235);;
+    SPT(10);;
+    STR(245);;
+    SPT(11);;
+    STR(R0);;
+
+//  x = 0
+    RST(@x);;
+
+//  y = 0
+    RST(@y);;
+
+//  iteratePixel:
+.iteratePixel
+//      fetchCoords:
+    .fetchCoords
+//          originalX = (x)
+//          originalY = (y + 8)
+//          zr = originalX
+//          zi = originalY
+//          iteration = 9
+        ADD(@tempLow, @y, 8);;
+        ADD(SP, @tempLow, R0);; // SPT(@tempLow)
+        ADD(SP, @x, R0);; // SPT(@x)
+        STR(@x) SPT(12);;
+        STR(@y) SPT(13);;
+        MOV(@zr, @originalX);;
+        MOV(@zi, @originalY);;
+        IMM(@iteration, 9);;
+        LOD(@originalY);;
+        LOD(@originalX);;
+
+//      loop:
+    .loop
+//          zi2sign = zi & 128
+//          temp = zr & 128
+//          zi2sign += temp
+        AND(@zr2Lower, @zi, 128) FLG(NE);;
+        AND(@tempLow, @zr, 128) FLG(NE);;
+        ADD(@tempLow, @zr2Lower);;
+
+//          calc abszi
+//          calc abszr
+//          zi2 = abszi * abszr (16 bit result)
+//          zi2 = zi2 >> 4 (16 bit shift)
+//          if zi2upper != 0:
+//              diverge
+        ;;
+        ; NEG(@abszi, @zi);
+        ; NEG(@abszr, @zr);
+        STR(@abszi) SPT(128); FFG(); // 5 // zi2 = abszi * abszr
+        STR(@abszr) SPT(129); FFG(); // 6
+        STL(~-2) FLG(!CF);; // 1 + 2, 3, 4 // 7
+        SPT(128);; // 8
+        ;; // 9
+        ;; // 10
+        LOD(@zi2Lower);;
+        LOD(@zi2Higher);;
+        RSH(@zi2Lower) JMP(~+0); RSH(@zi2Higher) FLG(CF) FFG(); // zi2 >>= 4 (16 bit)
+        RSH(@zi2Lower); RSH(@zi2Higher) FLG(CF) FFG();
+        RSH(@zi2Lower); RSH(@zi2Higher) FLG(CF) FFG();
+        RSH(@zi2Lower) FFG(); RSH(@zi2Higher) FLG(CF);
+        ; ADD(@zi2Lower, 16);
+        ; ADD(@zi2Lower, 32);
+        ; ADD(@zi2Lower, 64);
+        ; ADD(@zi2Lower, 128);
+        MOV(R0, @zi2Higher) FLG(!ZF) STL(~+1);;
+        MOV(R0, @tempLow) FLG(NE) STL(~+1); STL(.diverge);
+
+//          if zi2sign is negative:
+//              zi2 = -zi2 (16 bit negation)
+        STL(~+2); SUB(@zi2Lower, R0, @zi2Lower) FLG(CF) STL(~+1);
+        SBB(@zi2Higher, R0, @zi2Higher); SUB(@zi2Higher, R0, @zi2Higher);
+
+//          temp = 0
+//          if originalY is neg:
+//              temp = 255
+        MOV(R0, @originalY) FLG(NE) STL(~+1);;
+        RST(@zr2Lower); MOV(@zr2Lower, !R0);
+
+//          zi2 += originalY (16 bit addition with temp as sign extention)
+        ADD(@zi2Lower, @originalY) FLG(CF) STL(~+1);;
+        ADD(@zi2Higher, @zr2Lower); ADC(@zi2Higher, @zr2Lower);
+
+//          zi2sign = zi2Lower & 128
+//          temp = zi2Higher & 128
+//          if zi2sign != temp:
+//              diverge
+        AND(@tempLow, @zi2Lower, 128);;
+        AND(@zr2Lower, @zi2Higher, 128);;
+        SUB(R0, @tempLow, @zr2Lower) FLG(!ZF) STL(~+1);;
+        ; STL(.diverge);
+
+
+
+
+
+
+//          zr2 = abszr * abszr (16 bit result)
+//          zr2 = zr2 >> 4 (16 bit shift)
+//          zr2 = zr2 >> 1 (rounded)
+        STR(@abszr) SPT(128); FFG(); // 5 // zi2 = abszr * abszr
+        STR(@abszr) SPT(129); FFG(); // 6
+        STL(~-2) FLG(!CF);; // 1 + 2, 3, 4 // 7
+        SPT(128);; // 8
+        ;; // 9
+        ;; // 10
+        LOD(@zr2Lower);;
+        LOD(@zr2Higher);;
+        RSH(@zr2Lower) JMP(~+0); RSH(@zr2Higher) FLG(CF) FFG(); // zr2 >>= 4 (16 bit)
+        RSH(@zr2Lower); RSH(@zr2Higher) FLG(CF) FFG();
+        RSH(@zr2Lower); RSH(@zr2Higher) FLG(CF) FFG();
+        RSH(@zr2Lower) FFG(); RSH(@zr2Higher) FLG(CF);
+        ; ADD(@zr2Lower, 16);
+        ; ADD(@zr2Lower, 32);
+        ; ADD(@zr2Lower, 64);
+        ; ADD(@zr2Lower, 128);
+        RSH(@zr2Lower) FLG(CF) STL(~+1);; // zr2 >>= 1 (16 bit rounded)
+        RST(@tempLow); INC(@tempLow, R0);
+        RSH(@zr2Higher) FLG(CF) STL(~+1);;
+        ; ADD(@zr2Lower, 128);
+        ADD(@zr2Lower, @tempLow) FLG(CF) STL(~+1);;
+        ; INC(@zr2Higher);
+
+//          temp -= abszi * abszi (16 bit result)
+//          temp = temp >> 4 (16 bit shift)
+//          temp = temp >> 1 (rounded)
+        STR(@abszi) SPT(128); FFG(); // 5 // temp = abszi * abszi
+        STR(@abszi) SPT(129); FFG(); // 6
+        STL(~-2) FLG(!CF);; // 1 + 2, 3, 4 // 7
+        SPT(128);; // 8
+        ;; // 9
+        ;; // 10
+        LOD(@zr);; // zr = tempLower
+        LOD(@zi2Higher);; // zi2Higher = tempUpper
+        RSH(@zr) JMP(~+0); RSH(@zi2Higher) FLG(CF) FFG(); // temp >>= 4 (16 bit)
+        RSH(@zr); RSH(@zi2Higher) FLG(CF) FFG();
+        RSH(@zr); RSH(@zi2Higher) FLG(CF) FFG();
+        RSH(@zr) FFG(); RSH(@zi2Higher) FLG(CF);
+        ; ADD(@zr, 16);
+        ; ADD(@zr, 32);
+        ; ADD(@zr, 64);
+        ; ADD(@zr, 128);
+        RSH(@zr) FLG(CF) STL(~+1);; // temp >>= 1 (16 bit rounded)
+        RST(@tempLow); INC(@tempLow, R0);
+        RSH(@zi2Higher) FLG(CF) STL(~+1);;
+        ; ADD(@zr, 128);
+        ADD(@zr, @tempLow) FLG(CF) STL(~+1);;
+        ; INC(@zi2Higher);
+
+//          zr2 -= temp (16 bit subtraction)
+        SUB(@zr2Lower, @zr2Lower, @zr) FLG(CF) STL(~+1);;
+        SBB(@zr2Higher, @zr2Higher, @zi2Higher); SUB(@zr2Higher, @zr2Higher, @zi2Higher);
+
+//          zr2sign = zr2Lower & 128
+//          temp = zr2Higher & 128
+//          if zr2sign != temp:
+//              diverge
+        AND(@tempLow, @zr2Lower, 128);;
+        AND(@zi2Higher, @zr2Higher, 128);;
+        SUB(R0, @tempLow, @zr2Higher) FLG(!ZF) STL(~+1);;
+        ; STL(.diverge);
+
+//          temp = 0
+//          if originalX is neg:
+//              temp = 255
+        MOV(R0, @originalX) FLG(NE) STL(~+1);;
+        RST(@tempLow); MOV(@tempLow, !R0);
+
+//          zr2 += originalX (16 bit addition with temp as sign extention)
+        ADD(@zr2Lower, @zr2Lower, @originalX) FLG(CF) STL(~+1);;
+        ADD(@zr2Higher, @zr2Higher, @tempLow); ADC(@zr2Higher, @zr2Higher, @tempLow);
+
+//          zr2sign = zr2Lower & 128
+//          temp = zr2Higher & 128
+//          if zr2sign != temp:
+//              diverge
+        AND(@tempLow, @zr2Lower, 128);;
+        AND(@zi2Higher, @zr2Higher, 128);;
+        SUB(R0, @tempLow, @zr2Higher) FLG(!ZF) STL(~+1);;
+        ; STL(.diverge);
+
+//          zr = zr2Lower
+//          zi = zi2Lower
+        MOV(@zr, @zr2Lower);;
+        MOV(@zi, @zi2Lower);;
+
+//          iteration += 1
+//          if iteration == 9:
+//              converge
+//          else:
+//              goto loop
+        DEC(@iteration) FLG(ZF) STL(~+1);;
+        STL(.loop); STL(.converge);
+
+//      diverge:
+    .diverge
+//          fetch x and y from ram
+//          plot pixel using current x and y
+        SPT(12);;
+        SPT(13);; // 1
+        STL(~+1);; // 2 + 3, 4, 5
+        LOD(@x);;
+        LOD(@y);;
+        RSH(Y, @y) FLG(CF);;
+        SETX(@x);;
+        IMM(@zr2Lower, 124);; // 1
+        IMM(@zr2Higher, 125);; // 2
+        INC(@zi2Lower, R0); INC(@zi2Higher, R0) FFG(); // 3
+        RST(@zi2Higher); RST(@zi2Lower); // 4
+        STL(~+0) FLG(!CF); STL(~+1); // 5 + 6, 7, 8 // 9 + 10, 11, 12
+        STL(~+0) FLG(!CF); STL(~+1); // 13 + 14, 15, 16 // 17 + 18, 19, 20
+        STL(~+1);; // 21 + 22, 23
+        ADD(@tempLow, R0, DSR);; // tempLow = read
+
+//  if read == 124:
+//      zi2Lower = 1
+//  elif read == 125:
+//      zi2Higher = 1
+        SUB(R0, @tempLow, @zi2Higher) FLG(ZF) STL(~+1);;
+        SUB(R0, @tempLow, @zi2Lower) FLG(ZF) STL(~+1); INC(@zi2Lower, R0) STL(~+2);
+        ; INC(@zi2Higher, R0);
+
+//  if zi2Lower != 0:
+//      if zi2Higher == 0:
+//          print 124
+//      else:
+//          print 126
+//  else:
+//      print 125
+        MOV(R0, @zi2Lower) FLG(ZF) STL(~+1);;
+        MOV(R0, @zi2Higher) FLG(ZF) STL(~+1); PRT(125) STL();
+        PRT(126); PRT(124);
+        ;;
+        ;;
+
+//          if y != 3:
+//              temp = 6 - y
+//              plot pixel using current x and temp
+//          goto nextPixel
+        SUB(R0, @y, 3) FLG(ZF);;
+        ;;
+        ;;
+        ;;
+        SUB(@tempLow, 6, @y); STL(.nextPixel);
+        RSH(Y, @tempLow) FLG(CF);;
+        SETX(@x);;
+        IMM(@zr2Lower, 124);; // 1
+        IMM(@zr2Higher, 125);; // 2
+        INC(@zi2Lower, R0); INC(@zi2Higher, R0) FFG(); // 3
+        RST(@zi2Higher); RST(@zi2Lower); // 4
+        STL(~+0) FLG(!CF); STL(~+1); // 5 + 6, 7, 8 // 9 + 10, 11, 12
+        STL(~+0) FLG(!CF); STL(~+1); // 13 + 14, 15, 16 // 17 + 18, 19, 20
+        STL(~+1);; // 21 + 22, 23
+        ADD(@tempLow, R0, DSR);; // tempLow = read
+
+        SUB(R0, @tempLow, @zr2Lower) FLG(ZF) STL(~+1);;
+        SUB(R0, @tempLow, @zr2Higher) FLG(ZF) STL(~+1); INC(@zi2Lower, R0) STL(~+2);
+        ; INC(@zi2Higher, R0);
+
+        MOV(R0, @zi2Lower) FLG(ZF) STL(~+1);;
+        MOV(R0, @zi2Higher) FLG(ZF) STL(~+1); PRT(125) STL();
+        PRT(126); PRT(124);
+        ;;
+        ;;
+        STL(.nextPixel);;
+
+//      converge:
+    .converge
+//          fetch x and y from ram
+        SPT(12);;
+        SPT(13);; // 1
+        STL(~+1);; // 2 + 3, 4, 5
+        LOD(@x);;
+        LOD(@y);;
+
+//      nextPixel:
+    .nextPixel
+//          x += 1
+//          if x == 8:
+//              x = 0
+//              y += 1
+//              if y = 4:
+//                  HLT
+//          goto iteratePixel
+        INC(@x);;
+        SUB(R0, @x, 8) FLG(!ZF);;
+        ;;
+        ;;
+        ;;
+        RST(@x); STL(.iteratePixel);
+        INC(@y);;
+        SUB(R0, @y, 4) FLG(!ZF);;
+        ;;
+        ;;
+        ;;
+        HLT(); STL(.iteratePixel);
+
+

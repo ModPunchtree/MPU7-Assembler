@@ -60,10 +60,10 @@ def convertA(operand: str) -> list:
         return number
     elif operand == "SR":
         return [1, 1, 0, 0]
-    elif operand in ("DS", "DSW"):
-        return [1, 1, 0, 1]
     elif operand[0].isnumeric():
         return [1, 0, 1, 1]
+    elif operand == "VSH":
+        return [1, 1, 1, 0]
     else:
         raise Exception(f"FATAL - Unrecognised A operand: {operand}")
 

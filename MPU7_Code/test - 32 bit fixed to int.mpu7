@@ -1,0 +1,62 @@
+
+@DEFINE ansLL R1
+@DEFINE ansLH R2
+@DEFINE ansHL R3
+@DEFINE ansHH R4
+@DEFINE carryOut R5
+@DEFINE iterations R6
+@DEFINE tempLL R7
+@DEFINE tempLH R8
+@DEFINE tempHL R9
+@DEFINE tempHH R10
+
+STR(R0) SPT(154);; // toggle NOR/ACF
+
+IMM(@ansHH, 201);;
+IMM(@ansHL, 15);;
+IMM(@ansLH, 218);;
+IMM(@ansLL, 162);;
+
+.fixedToInt32Bit
+    RST(@carryOut);;
+    IMM(@iterations, 30);;
+
+    .tryMultByFiveElseDivTwo
+        LSH(@tempLL, @ansLL);;
+        ACF(@tempLH, @ansLH, @ansLH);;
+        ACF(@tempHL, @ansHL, @ansHL);;
+        ACF(@tempHH, @ansHH, @ansHH) FLG(CF);;
+        LSH(@tempLL);;
+        ACF(@tempLH, @tempLH, @tempLH);;
+        ACF(@tempHL, @tempHL, @tempHL);;
+        ACF(@tempHH, @tempHH, @tempHH) FLG(CF); STL(.divtwo) FLG(!CF);
+        ADD(@tempLL, @ansLL);;
+        ACF(@tempLH, @ansLH);;
+        ACF(@tempHL, @ansHL);;
+        ACF(@tempHH, @ansHH) FLG(CF); STL(.divtwo) FLG(!CF);
+        ADD(@tempLL, @tempLL, @carryOut);;
+        ACF(@tempLH, @tempLH, R0);;
+        ACF(@tempHL, @tempHL, R0);;
+    .divtwo
+        ACF(@ansHH, @tempHH, R0); RSH(@carryOut) FFG();
+        RST(@carryOut) JMP(.endFixedToInt); RSH(@ansHH) FLG(CF) FFG();
+        MOV(@ansHL, @tempHL); RSH(@ansHL) FLG(CF) FFG();
+        MOV(@ansLH, @tempLH); RSH(@ansLH) FLG(CF) FFG();
+        MOV(@ansLL, @tempLL); RSH(@ansLL) FLG(CF);
+
+        ; ADD(@ansHL, 128);
+        ; ADD(@ansLH, 128);
+        ; ADD(@ansLL, 128);
+        ; ADD(@carryOut, 3);
+
+    .endFixedToInt
+        DEC(@iterations) FLG(ZF) STL(~+1);;
+        STL(.tryMultByFiveElseDivTwo);;
+
+HLT();;
+
+
+
+
+
+

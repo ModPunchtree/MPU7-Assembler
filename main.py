@@ -1,6 +1,7 @@
 
 from Pseudo_Assembly_Converter.pseudo_assembly_converter import convertPseudoAssembly
 from assembler.assembler import assemble
+from schem.assemblyToSchem import generateInstructionROM
 from tokeniser.tokeniser import tokenise
 
 name = input("File name: ")
@@ -70,4 +71,6 @@ flagColumn = "     " + " ".join(flagColumnChecksums[: 12]) + " | " + " ".join(fl
 
 answer = ((f"Non-flag Instruction ROM:\n{nonFlagROM}{nonflagColumn}\n\nFlag Instruction ROM:\n{flagROM}{flagColumn}\n\nNon-flag Immediate ROM\n{nonFlagImmediate}\nFlag Immediate ROM\n{flagImmediate}").replace(",", " ")).replace("][", " | ")
 
-print(answer)
+generateInstructionROM(instructionROM, immediateROM, name)
+
+#print(answer)

@@ -1,0 +1,20 @@
+IN R1 %NUMB
+
+
+.collatz
+OUT %NUMB R1
+OUT %TEXT '\n'
+BRE .ONE R1 1
+BOD .ODD R1
+RSH R1 R1
+
+JMP .collatz
+
+.ODD
+LSH R2 R1
+ADD R1 R1 R2
+INC R1 R1
+JMP .collatz
+
+.ONE
+HLT

@@ -336,7 +336,7 @@ def tokenise(rawCode: str) -> list:
             return "125"
         if char == "P2":
             return "126"
-        if char == " ":
+        if (char == " ") or (char == ""):
             return "127"
         raise Exception(f"FATAL - Unrecognised char: {char}")
     

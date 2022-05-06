@@ -1,0 +1,47 @@
+IMM(R10, 128);;
+// IN R1 %NUMB
+SPT(146);;
+FLG(IN) STL(~+0); ADD(R0, R0, IN) SPT(143);
+STL(~+0) FLG(!CF); IMM(R8, 100) FFG();
+STL(~+1); ADD(X, SR, 253) FFG();
+STL(~+1); ADD(X, SR, 254) FFG();
+STL(~+1); ADD(X, SR, !R0) FFG();
+STL(~+1); STL(~-3);
+STR(R8) SPT(129); LSH(R1, R8) FFG();
+ADD(SR, R0, DSR) SPT(128); LSH(R1) FFG();
+ADD(R8, R0, DSR); ADD(R8, R1) FFG();
+ADD(R9, VSH, DSR) STL(~-3) FLG(!CF); LSH(R8) STL(~+1) FLG(!CF);
+ADD(R1, SR, R9); ADD(R9, R8) STL(~+0);
+.collatz
+// OUT %NUMB R1
+STR(R1) SPT(133);;
+SETX(R0) VSH() STL(~+0) FLG(!CF); RPT(~+4);
+SPT(135) RET();;
+SPT(134) RET();;
+SPT(133);;
+ADD(R0, SR, DSW);;
+// OUT %TEXT '\n'
+STL(~+0) FLG(!CF); SETX(R0) VSH();
+// BRE .ONE R1 1
+RPT(~+2);;
+SUB(R0, 1, R1) FLG(ZF) STL(RET);;
+; STL(.ONE);
+// BOD .ODD R1
+ADD(R0, R1) FLG(OD) STL(~+1);;
+; STL(.ODD);
+// RSH R1 R1
+RSH(R1, R1);;
+// JMP .collatz
+STL(.collatz);;
+.ODD
+// LSH R2 R1
+LSH(R2, R1);;
+// ADD R1 R1 R2
+ADD(R1, R1, R2);;
+// INC R1 R1
+INC(R1, R1);;
+// JMP .collatz
+STL(.collatz);;
+.ONE
+// HLT
+HLT();;

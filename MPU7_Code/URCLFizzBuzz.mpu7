@@ -1,0 +1,74 @@
+IMM(R10, 128);; 
+// IMM R1 0     
+IMM(R1, R0);;   
+// IMM R2 3     
+IMM(R2, 3);;    
+// IMM R3 5     
+IMM(R3, 5);;    
+.loop
+// IMM R4 0
+IMM(R4, R0);;
+// INC R1 R1
+INC(R1, R1);;
+// DEC R2 R2
+DEC(R2, R2);;
+// BNZ ~+3 R2
+ADD(R0, R2) FLG(!ZF) STL(~+1);;
+; STL(~+3);
+// ADD R4 R4 128
+ADD(R4, R4, 128);;
+// IMM R2 3
+IMM(R2, 3);;
+// DEC R3 R3
+DEC(R3, R3);;
+// BNZ ~+3 R3
+ADD(R0, R3) FLG(!ZF) STL(~+1);;
+; STL(~+3);
+// ADD R4 R4 1
+ADD(R4, R4, 1);;
+// IMM R3 5
+IMM(R3, 5);;
+// BRN .drawfib R4
+ADD(R0, R4) FLG(NE) STL(~+1);;
+; STL(.drawfib);
+// BOD .drawbuzz R4
+ADD(R0, R4) FLG(OD) STL(~+1);;
+; STL(.drawbuzz);
+// OUT %NUMB R1
+STR(R1) SPT(133);;
+SETX(R0) VSH() STL(~+0) FLG(!CF); RPT(~+4);
+SPT(135) RET();;
+SPT(134) RET();;
+SPT(133);;
+ADD(R0, SR, DSW);;
+// JMP .loop
+STL(.loop);;
+.drawfib
+// OUT %TEXT '\n'
+STL(~+0) FLG(!CF); SETX(R0) VSH();
+// OUT %TEXT 'F'
+PRT('F');;
+// OUT %TEXT 'i'
+PRT('i');;
+// OUT %TEXT 'z'
+PRT('z');;
+// OUT %TEXT 'z'
+PRT('z');;
+// BEV .loop R4
+ADD(R0, R4) FLG(OD) STL(~+1);;
+STL(.loop);;
+// JMP ~+2
+STL(~+2);;
+.drawbuzz
+// OUT %TEXT '\n'
+STL(~+0) FLG(!CF); SETX(R0) VSH();
+// OUT %TEXT 'B'
+PRT('B');;
+// OUT %TEXT 'u'
+PRT('u');;
+// OUT %TEXT 'z'
+PRT('z');;
+// OUT %TEXT 'z'
+PRT('z');;
+// JMP .loop
+STL(.loop);;

@@ -1,0 +1,37 @@
+
+@DEFINE eightK R0
+@DEFINE fourthDividend R1
+@DEFINE tempHH R10
+@DEFINE tempHL R9
+@DEFINE tempLH R8
+@DEFINE tempLL R7
+
+IMM(R1, 64);;
+
+SPT(130); FFG();
+ADD(SR, @eightK, 6); FFG();
+STR(@fourthDividend) SPT(131); SPT(130) FFG();
+STL(~-3) FLG(!CF); STL(~+1);
+;;
+LOD(@tempHH) SPT(131);;
+STL(~+0) FLG(!CF);;
+LOD(SR) SPT(132);; // dividendhigh = remainder
+STR(R0) SPT(131);;
+STL(~+0) FLG(!CF); STL(~+1);
+SPT(130);;
+STL(~+0) FLG(!CF);;
+LOD(@tempHL) SPT(131);;
+STL(~+0) FLG(!CF);;
+LOD(SR) SPT(132);; // dividendhigh = remainder
+STL(~+0) FLG(!CF); STL(~+1);
+SPT(130);;
+STL(~+0) FLG(!CF);;
+LOD(@tempLH) SPT(131);;
+STL(~+0) FLG(!CF);;
+LOD(SR) SPT(132);; // dividendhigh = remainder
+STL(~+0) FLG(!CF); STL(~+1);
+SPT(132);;
+STL(~+0) FLG(!CF); STR(R0);
+LOD(@tempLL);;
+HLT();;
+
