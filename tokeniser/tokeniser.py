@@ -28,12 +28,14 @@ def tokenise(rawCode: str) -> list:
     for line in code:
         lineAnswer = []
         char = 0
+        if line == "PRT(',');;":
+            hi = 1
         while char < len(line):
             if line[char].isalnum() or line[char] in ("@", "~", "-", "+", "'", ".", "!", "_"): # .startswith(("NOP", "RST", "ADD", "ADC", "SUB", "SBB", "MOV", "IMM", "INC", "DEC", "NEG", "LSH", "LSC", "RSH", "NOR", "AND", "NOT", "FLG", "SETX", "SETY", "PRT", "VSH", "SPT", "RPT", "HLT", "JMP", "RET", "STL", "FFG", "CLR", "STR", "LOD")):
                 text = line[char]
                 char += 1
                 if char < len(line):
-                    if (text == "'") and (line[char] in (" ", "!", ":", ";", "%", "#", "'", "~", "(", ")", "{", "}", "[", "]", "<", ">", "?", "/", "\\", "£", "$", "€", "^", "&", "=", "_", "|", "@")):
+                    if (text == "'") and (line[char] in (" ", "!", ":", ";", "%", "#", "'", "~", "(", ")", "{", "}", "[", "]", "<", ">", "?", "/", "\\", "£", "$", "€", "^", "&", "=", "_", "|", "@", ",")):
                         text += line[char]
                         char += 1
                     while line[char].isalnum() or line[char] in ("+", "-", "'", "_", ".", "*", "/"):

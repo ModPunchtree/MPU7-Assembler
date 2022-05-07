@@ -1,6 +1,8 @@
 
 def convertC(operand: str) -> list:
-    if operand.startswith("R"):
+    if operand == "RP":
+        return [1, 1, 0, 1]
+    elif operand.startswith("R"):
         number = operand[1:]
         number = int(number, 0)
         number = bin(number)[2: ]
@@ -14,8 +16,6 @@ def convertC(operand: str) -> list:
         return [1, 0, 1, 1]
     elif operand == "SP":
         return [1, 1, 0, 0]
-    elif operand == "RP":
-        return [1, 1, 0, 1]
     elif operand == "X":
         return [1, 1, 1, 0]
     elif operand == "Y":

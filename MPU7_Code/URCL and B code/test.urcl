@@ -1,162 +1,23 @@
 
+IMM R1 0
 
-// According to all known laws of aviation, there is no way a bee should be able to fly.
+.loop1
+    STR R1 R1
+    INC R1 R1
+    BRP .loop1 R1
 
-OUT %TEXT 'A'
-OUT %TEXT 'c'
-OUT %TEXT 'c'
-OUT %TEXT 'o'
-OUT %TEXT 'r'
-OUT %TEXT 'd'
-OUT %TEXT 'i'
-OUT %TEXT 'n'
-OUT %TEXT 'g'
-OUT %TEXT ' '
-OUT %TEXT 't'
-OUT %TEXT 'o'
-OUT %TEXT ' '
-OUT %TEXT 'a'
-OUT %TEXT 'l'
-OUT %TEXT 'l'
-OUT %TEXT ' '
-OUT %TEXT 'k'
-OUT %TEXT 'n'
-OUT %TEXT 'o'
-OUT %TEXT 'w0'
-OUT %TEXT 'w1'
-OUT %TEXT 'n'
-OUT %TEXT ' '
-OUT %TEXT 'l'
-OUT %TEXT 'a'
-OUT %TEXT 'w0'
-OUT %TEXT 'w1'
-OUT %TEXT 's'
-OUT %TEXT ' '
-OUT %TEXT 'o'
-OUT %TEXT 'f'
-OUT %TEXT ' '
-OUT %TEXT 'a'
-OUT %TEXT 'v'
-OUT %TEXT 'i'
-OUT %TEXT 'a'
-OUT %TEXT 't'
-OUT %TEXT 'i'
-OUT %TEXT 'o'
-OUT %TEXT 'n'
-OUT %TEXT ','
-OUT %TEXT ' '
-OUT %TEXT 't'
-OUT %TEXT 'h'
-OUT %TEXT 'e'
-OUT %TEXT 'r'
-OUT %TEXT 'e'
-OUT %TEXT ' '
-OUT %TEXT 'i'
-OUT %TEXT 's'
-OUT %TEXT ' '
-OUT %TEXT 'n'
-OUT %TEXT 'o'
-OUT %TEXT ' '
-OUT %TEXT 'w0'
-OUT %TEXT 'w1'
-OUT %TEXT 'a'
-OUT %TEXT 'y'
-OUT %TEXT ' '
-OUT %TEXT 'a'
-OUT %TEXT ' '
-OUT %TEXT 'b'
-OUT %TEXT 'e'
-OUT %TEXT 'e'
-OUT %TEXT ' '
-OUT %TEXT 's'
-OUT %TEXT 'h'
-OUT %TEXT 'o'
-OUT %TEXT 'u'
-OUT %TEXT 'l'
-OUT %TEXT 'd'
-OUT %TEXT ' '
-OUT %TEXT 'b'
-OUT %TEXT 'e'
-OUT %TEXT ' '
-OUT %TEXT 'a'
-OUT %TEXT 'b'
-OUT %TEXT 'l'
-OUT %TEXT 'e'
-OUT %TEXT ' '
-OUT %TEXT 't'
-OUT %TEXT 'o'
-OUT %TEXT ' '
-OUT %TEXT 'f'
-OUT %TEXT 'l'
-OUT %TEXT 'y'
-OUT %TEXT '.'
+IMM R1 0
+
+.loop2
+    LOD R2 R1
+    BNE .fail R1 R2
+    INC R1 R1
+    JMP .loop2
+
+OUT %TEXT 'G'
 HLT
 
-
-
-/*
-According to all known laws of aviation, there is no way a bee should be able to fly.
-Its wings are too small to get its fat little body off the ground.
-The bee, of course, flies anyway because bees don't care what humans think is impossible.
-Yellow, black. Yellow, black. Yellow, black. Yellow, black.
-Ooh, black and yellow!
-Let's shake it up a little.
-Barry! Breakfast is ready!
-Coming!
-Hang on a second.
-Hello?
-Barry?
-Adam?
-Can you believe this is happening?
-I can't.
-I'll pick you up.
-Looking sharp.
-Use the stairs, Your father paid good money for those.
-Sorry. I'm excited.
-Here's the graduate.
-We're very proud of you, son.
-A perfect report card, all B's.
-Very proud.
-Ma! I got a thing going here.
-You got lint on your fuzz.
-Ow! That's me!
-Wave to us! We'll be in row 118,000.
-Bye!
-Barry, I told you, stop flying in the house!
-Hey, Adam.
-Hey, Barry.
-Is that fuzz gel?
-A little. Special day, graduation.
-Never thought I'd make it.
-Three days grade school, three days high school.
-Those were awkward.
-Three days college. I'm glad I took a day and hitchhiked around The Hive.
-You did come back different.
-Hi, Barry. Artie, growing a mustache? Looks good.
-Hear about Frankie?
-Yeah.
-You going to the funeral?
-No, I'm not going.
-Everybody knows, sting someone, you die.
-Don't waste it on a squirrel.
-Such a hothead.
-I guess he could have just gotten out of the way.
-I love this incorporating an amusement park into our day.
-That's why we don't need vacations.
-Boy, quite a bit of pomp under the circumstances.
-Well, Adam, today we are men.
-We are!
-Bee-men.
-Amen!
-Hallelujah!
-*/
-
-
-
-
-
-
-
-
-
+.fail
+    OUT %NUMB R1
+    HLT
 

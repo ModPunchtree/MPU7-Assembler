@@ -1,0 +1,28 @@
+JMP .End_add_global
+.add_global        
+INC SP SP
+POP R1
+POP R2
+SUB SP SP 3        
+ADD R3 R1 R2       
+INC SP SP
+STR SP R3
+DEC SP SP
+RET
+INC SP SP
+STR SP 0
+DEC SP SP
+RET
+.End_add_global    
+IMM R2 3
+PSH R2
+IMM R3 5
+PSH R3
+CAL .add_global    
+POP R2
+ADD SP SP 1        
+MOV R1 R2
+.asmStart_3        
+OUT %NUMB R1       
+.asmEnd_3
+HLT

@@ -1,0 +1,57 @@
+IMM R4 255
+.loop
+INC R4 R4
+PSH R4
+OUT %TEXT '\n'
+OUT %TEXT 'f'
+OUT %TEXT 'i'
+OUT %TEXT 'b'
+OUT %TEXT '('
+OUT %TEXT R4
+OUT %TEXT ')'
+OUT %TEXT ':'
+.fib
+PSH .return_0
+.recursiveFibonacci_global
+INC SP SP
+POP R1
+SUB SP SP 2
+SETL R2 R1 2
+BGE .elseStart_2 R1 2
+INC SP SP
+STR SP R1
+DEC SP SP
+RET
+.elseStart_2
+DEC R2 R1
+PSH R1
+PSH R2
+PSH R2
+PSH .return_1
+JMP .recursiveFibonacci_global
+.return_1
+POP R2
+INC SP SP
+POP R1
+SUB R3 R1 2
+PSH R1
+PSH R2
+PSH R3
+PSH R3
+PSH .return_2
+JMP .recursiveFibonacci_global
+.return_2
+POP R3
+INC SP SP
+POP R2
+POP R1
+ADD R2 R2 R3
+INC SP SP
+STR SP R2
+DEC SP SP
+RET
+.return_0
+POP R2
+MOV R1 R2
+OUT %NUMB R1
+JMP .loop

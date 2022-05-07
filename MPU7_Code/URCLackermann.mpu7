@@ -1,0 +1,209 @@
+IMM(R10, 128);; // 0
+// OUT %TEXT 'a'
+PRT('a');; // 1
+// OUT %TEXT 'c'
+PRT('c');; // 2
+// OUT %TEXT 'k'
+PRT('k');; // 3
+// OUT %TEXT '('
+PRT('(');; // 4
+// OUT %TEXT '3'
+PRT('3');; // 5
+// OUT %TEXT ','
+PRT(',');; // 6
+// OUT %TEXT '1'
+PRT('1');; // 7
+// OUT %TEXT ')'
+PRT(')');; // 8
+// OUT %TEXT ':'
+PRT(':');; // 9
+// PSH 0
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10); // 10
+STR(1);; // 11
+// PSH 0
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10); // 12
+STR(3);; // 13
+// PSH .return_0
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10);
+STR(.return_0);;
+.ack_global
+// INC SP SP
+INC(R10, R10);;
+// POP R1
+INC(R10); STL(~+1) FLG(!CF);
+MOV(SP, R10) STL(~-1) FLG(!CF); LOD(R1);
+// POP R2
+INC(R10); STL(~+1) FLG(!CF);
+MOV(SP, R10) STL(~-1) FLG(!CF); LOD(R2);
+// SUB SP SP 3
+SUB(R10, R10, 3);;
+// BNZ .elseStart_2 R1
+MOV(R0, R1) FLG(!ZF) STL(~+1);;
+; STL(.elseStart_2);
+// INC R3 R2
+INC(R3, R2);;
+// INC SP SP
+INC(R10, R10);;
+// STR SP R3
+;;
+MOV(SP, R10) STL(~+0) FLG(!CF); STR(R3);
+// DEC SP SP
+DEC(R10, R10);;
+// RET
+;;
+MOV(SP, R10) STL(~+0) FLG(!CF); INC(R10) STL(~+1);
+LOD(R9) STL(~+0) FLG(!CF); ADD(RP, R0, R9);
+STL(RET);;
+.elseStart_2
+// BNZ .elseStart_5 R2
+MOV(R0, R2) FLG(!ZF) STL(~+1);;
+; STL(.elseStart_5);
+// DEC R3 R1
+DEC(R3, R1);;
+// PSH R1
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10);
+STR(R1);;
+// PSH R2
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10);
+STR(R2);;
+// PSH R3
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10);
+STR(R3);;
+// PSH 1
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10);
+STR(1);;
+// PSH R3
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10);
+STR(R3);;
+// PSH .return_1
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10);
+STR(.return_1);;
+// JMP .ack_global
+STL(.ack_global);;
+.return_1
+// POP R3
+INC(R10); STL(~+1) FLG(!CF);
+MOV(SP, R10) STL(~-1) FLG(!CF); LOD(R3);
+// ADD SP SP 2
+ADD(R10, R10, 2);;
+// POP R2
+INC(R10); STL(~+1) FLG(!CF);
+MOV(SP, R10) STL(~-1) FLG(!CF); LOD(R2);
+// POP R1
+INC(R10); STL(~+1) FLG(!CF);
+MOV(SP, R10) STL(~-1) FLG(!CF); LOD(R1);
+// INC SP SP
+INC(R10, R10);;
+// STR SP R3
+;;
+MOV(SP, R10) STL(~+0) FLG(!CF); STR(R3);
+// DEC SP SP
+DEC(R10, R10);;
+// RET
+;;
+MOV(SP, R10) STL(~+0) FLG(!CF); INC(R10) STL(~+1);
+LOD(R9) STL(~+0) FLG(!CF); ADD(RP, R0, R9);
+STL(RET);;
+.elseStart_5
+// DEC R3 R1
+DEC(R3, R1);;
+// DEC R4 R2
+DEC(R4, R2);;
+// PSH R1
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10);
+STR(R1);;
+// PSH R2
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10);
+STR(R2);;
+// PSH R3
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10);
+STR(R3);;
+// PSH R4
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10);
+STR(R4);;
+// PSH R4
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10);
+STR(R4);;
+// PSH R1
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10);
+STR(R1);;
+// PSH .return_2
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10);
+STR(.return_2);;
+// JMP .ack_global
+STL(.ack_global);;
+.return_2
+// POP R4
+INC(R10); STL(~+1) FLG(!CF);
+MOV(SP, R10) STL(~-1) FLG(!CF); LOD(R4);
+// ADD SP SP 2
+ADD(R10, R10, 2);;
+// POP R3
+INC(R10); STL(~+1) FLG(!CF);
+MOV(SP, R10) STL(~-1) FLG(!CF); LOD(R3);
+// POP R2
+INC(R10); STL(~+1) FLG(!CF);
+MOV(SP, R10) STL(~-1) FLG(!CF); LOD(R2);
+// LOD R1 SP
+;;
+ADD(SP, R10, R0) STL(~+1);;
+STL(~+0) FLG(!CF); LOD(R1);
+// PSH R2
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10);
+STR(R2);;
+// PSH R3
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10);
+STR(R3);;
+// PSH R4
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10);
+STR(R4);;
+// PSH R4
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10);
+STR(R4);;
+// PSH R3
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10);
+STR(R3);;
+// PSH .return_3
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10);
+STR(.return_3);;
+// JMP .ack_global
+STL(.ack_global);;
+.return_3
+// POP R3
+INC(R10); STL(~+1) FLG(!CF);
+MOV(SP, R10) STL(~-1) FLG(!CF); LOD(R3);
+// ADD SP SP 3
+ADD(R10, R10, 3);;
+// POP R2
+INC(R10); STL(~+1) FLG(!CF);
+MOV(SP, R10) STL(~-1) FLG(!CF); LOD(R2);
+// POP R1
+INC(R10); STL(~+1) FLG(!CF);
+MOV(SP, R10) STL(~-1) FLG(!CF); LOD(R1);
+// INC SP SP
+INC(R10, R10);;
+// STR SP R3
+;;
+MOV(SP, R10) STL(~+0) FLG(!CF); STR(R3);
+// DEC SP SP
+DEC(R10, R10);;
+// RET
+;;
+MOV(SP, R10) STL(~+0) FLG(!CF); INC(R10) STL(~+1);
+LOD(R9) STL(~+0) FLG(!CF); ADD(RP, R0, R9);
+STL(RET);;
+.return_0
+// POP R2
+INC(R10); STL(~+1) FLG(!CF);
+MOV(SP, R10) STL(~-1) FLG(!CF); LOD(R2);
+// MOV R1 R2
+MOV(R1, R2);;
+// OUT %NUMB R1
+STR(R1) SPT(133);;
+SETX(R0) VSH() STL(~+0) FLG(!CF); RPT(~+4);
+SPT(135) RET();;
+SPT(134) RET();;
+SPT(133);;
+ADD(R0, SR, DSW);;
+// HLT
+HLT();;

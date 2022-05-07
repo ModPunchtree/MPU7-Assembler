@@ -1,0 +1,80 @@
+OUT %TEXT 'a'
+OUT %TEXT 'c'
+OUT %TEXT 'k'
+OUT %TEXT '('
+OUT %TEXT '3'
+OUT %TEXT ','
+OUT %TEXT '1'
+OUT %TEXT ')'
+OUT %TEXT ':'
+PSH 0
+PSH 0
+PSH .return_0
+.ack_global
+INC SP SP
+POP R1
+POP R2
+SUB SP SP 3
+BNZ .elseStart_2 R1
+INC R3 R2
+INC SP SP
+STR SP R3
+DEC SP SP
+RET
+.elseStart_2
+BNZ .elseStart_5 R2
+DEC R3 R1
+PSH R1
+PSH R2
+PSH R3
+PSH 1
+PSH R3
+PSH .return_1
+JMP .ack_global
+.return_1
+POP R3
+ADD SP SP 2
+POP R2
+POP R1
+INC SP SP
+STR SP R3
+DEC SP SP
+RET
+.elseStart_5
+DEC R3 R1
+DEC R4 R2
+PSH R1
+PSH R2
+PSH R3
+PSH R4
+PSH R4
+PSH R1
+PSH .return_2
+JMP .ack_global
+.return_2
+POP R4
+ADD SP SP 2
+POP R3
+POP R2
+LOD R1 SP
+PSH R2
+PSH R3
+PSH R4
+PSH R4
+PSH R3
+PSH .return_3
+JMP .ack_global
+.return_3
+POP R3
+ADD SP SP 3
+POP R2
+POP R1
+INC SP SP
+STR SP R3
+DEC SP SP
+RET
+.return_0
+POP R2
+MOV R1 R2
+OUT %NUMB R1
+HLT

@@ -1,0 +1,143 @@
+IMM(R10, 128);;
+// IMM R4 255
+IMM(R4, !R0);;
+.loop
+// INC R4 R4
+INC(R4, R4);;
+// PSH R4
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10);
+STR(R4);;
+// OUT %TEXT '\n'
+STL(~+0) FLG(!CF); SETX(R0) VSH();
+// OUT %TEXT 'f'
+PRT('f');;
+// OUT %TEXT 'i'
+PRT('i');;
+// OUT %TEXT 'b'
+PRT('b');;
+// OUT %TEXT '('
+PRT('(');;
+// OUT %TEXT R4
+PRT(R4);;
+// OUT %TEXT ')'
+PRT(')');;
+// OUT %TEXT ':'
+PRT(':');;
+.fib
+// PSH .return_0
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10);
+STR(.return_0);;
+.recursiveFibonacci_global
+// INC SP SP
+INC(R10, R10);;
+// POP R1
+INC(R10); STL(~+1) FLG(!CF);
+MOV(SP, R10) STL(~-1) FLG(!CF); LOD(R1);
+// SUB SP SP 2
+SUB(R10, R10, 2);;
+// SETL R2 R1 2
+IMM(R9, 2);;
+SUB(R0, R1, R9) FLG(!CF) STL(~+1);;
+RST(R2); MOV(R2, !R0);
+// BGE .elseStart_2 R1 2
+RPT(~+2);;
+SUB(R0, R1, 2) FLG(CF) STL(RET);;
+; STL(.elseStart_2);
+// INC SP SP
+INC(R10, R10);;
+// STR SP R1
+;;
+MOV(SP, R10) STL(~+0) FLG(!CF); STR(R1);
+// DEC SP SP
+DEC(R10, R10);;
+// RET
+;;
+MOV(SP, R10) STL(~+0) FLG(!CF); INC(R10) STL(~+1);
+LOD(R9) STL(~+0) FLG(!CF); ADD(RP, R0, R9);
+STL(RET);;
+.elseStart_2
+// DEC R2 R1
+DEC(R2, R1);;
+// PSH R1
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10);
+STR(R1);;
+// PSH R2
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10);
+STR(R2);;
+// PSH R2
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10);
+STR(R2);;
+// PSH .return_1
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10);
+STR(.return_1);;
+// JMP .recursiveFibonacci_global
+STL(.recursiveFibonacci_global);;
+.return_1
+// POP R2
+INC(R10); STL(~+1) FLG(!CF);
+MOV(SP, R10) STL(~-1) FLG(!CF); LOD(R2);
+// INC SP SP
+INC(R10, R10);;
+// POP R1
+INC(R10); STL(~+1) FLG(!CF);
+MOV(SP, R10) STL(~-1) FLG(!CF); LOD(R1);
+// SUB R3 R1 2
+SUB(R3, R1, 2);;
+// PSH R1
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10);
+STR(R1);;
+// PSH R2
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10);
+STR(R2);;
+// PSH R3
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10);
+STR(R3);;
+// PSH R3
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10);
+STR(R3);;
+// PSH .return_2
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10);
+STR(.return_2);;
+// JMP .recursiveFibonacci_global
+STL(.recursiveFibonacci_global);;
+.return_2
+// POP R3
+INC(R10); STL(~+1) FLG(!CF);
+MOV(SP, R10) STL(~-1) FLG(!CF); LOD(R3);
+// INC SP SP
+INC(R10, R10);;
+// POP R2
+INC(R10); STL(~+1) FLG(!CF);
+MOV(SP, R10) STL(~-1) FLG(!CF); LOD(R2);
+// POP R1
+INC(R10); STL(~+1) FLG(!CF);
+MOV(SP, R10) STL(~-1) FLG(!CF); LOD(R1);
+// ADD R2 R2 R3
+ADD(R2, R2, R3);;
+// INC SP SP
+INC(R10, R10);;
+// STR SP R2
+;;
+MOV(SP, R10) STL(~+0) FLG(!CF); STR(R2);
+// DEC SP SP
+DEC(R10, R10);;
+// RET
+;;
+MOV(SP, R10) STL(~+0) FLG(!CF); INC(R10) STL(~+1);
+LOD(R9) STL(~+0) FLG(!CF); ADD(RP, R0, R9);
+STL(RET);;
+.return_0
+// POP R2
+INC(R10); STL(~+1) FLG(!CF);
+MOV(SP, R10) STL(~-1) FLG(!CF); LOD(R2);
+// MOV R1 R2
+MOV(R1, R2);;
+// OUT %NUMB R1
+STR(R1) SPT(133);;
+SETX(R0) VSH() STL(~+0) FLG(!CF); RPT(~+4);
+SPT(135) RET();;
+SPT(134) RET();;
+SPT(133);;
+ADD(R0, SR, DSW);;
+// JMP .loop
+STL(.loop);;

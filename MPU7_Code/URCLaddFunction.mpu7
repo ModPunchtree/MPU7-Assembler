@@ -1,0 +1,72 @@
+IMM(R10, 128);; // 00
+// JMP .End_add_global
+STL(.End_add_global);; // 01
+.add_global
+// INC SP SP
+INC(R10, R10);; // 02
+// POP R1
+INC(R10); STL(~+1) FLG(!CF); // 03
+MOV(SP, R10) STL(~-1) FLG(!CF); LOD(R1); // 04
+// POP R2
+INC(R10); STL(~+1) FLG(!CF); // 05
+MOV(SP, R10) STL(~-1) FLG(!CF); LOD(R2); // 06
+// SUB SP SP 3
+SUB(R10, R10, 3);; // 07
+// ADD R3 R1 R2
+ADD(R3, R1, R2);; // 08
+// INC SP SP
+INC(R10, R10);; // 09
+// STR SP R3
+;; // 0A
+MOV(SP, R10) STL(~+0) FLG(!CF); STR(R3); // 0B
+// DEC SP SP
+DEC(R10, R10);; // 0C
+// RET
+;; // 0D
+MOV(SP, R10) STL(~+0) FLG(!CF); INC(R10) STL(~+1); // 0E
+LOD(R9) STL(~+0) FLG(!CF); ADD(RP, R0, R9); // 0F
+STL(RET);; // 10
+// INC SP SP
+INC(R10, R10);; // 11
+// STR SP 0
+;; // 12
+MOV(SP, R10) STL(~+0) FLG(!CF); STR(R0); // 13
+// DEC SP SP
+DEC(R10, R10);; // 14
+// RET
+;; // 15
+MOV(SP, R10) STL(~+0) FLG(!CF); INC(R10) STL(~+1); // 16
+LOD(R9) STL(~+0) FLG(!CF); ADD(RP, R0, R9); // 17
+STL(RET);; // 18
+.End_add_global
+// IMM R2 3
+IMM(R2, 3);; // 19
+// PSH R2
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10); // 1A
+STR(R2);; // 1B
+// IMM R3 5
+IMM(R3, 5);; // 1C
+// PSH R3
+DEC(R10) STL(~+0) FLG(!ZF); MOV(SP, R10); // 1D
+STR(R3);; // 1E
+// CAL .add_global
+DEC(R10) STL(~+1); STR(~+2) FFG(); // 1F
+ADD(SP, R10, R0) STL(~-1) FLG(!CF); STL(.add_global); // 20
+// POP R2
+INC(R10); STL(~+1) FLG(!CF); // 21
+MOV(SP, R10) STL(~-1) FLG(!CF); LOD(R2); // 22
+// ADD SP SP 1
+ADD(R10, R10, 1);; // 23
+// MOV R1 R2
+MOV(R1, R2);; // 24
+.asmStart_3
+// OUT %NUMB R1
+STR(R1) SPT(133);; // 25
+SETX(R0) VSH() STL(~+0) FLG(!CF); RPT(~+4); // 26
+SPT(135) RET();; // 27
+SPT(134) RET();; // 28
+SPT(133);; // 29
+ADD(R0, SR, DSW);; // 2A
+.asmEnd_3
+// HLT
+HLT();; // 2B

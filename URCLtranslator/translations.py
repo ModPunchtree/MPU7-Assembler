@@ -12,7 +12,7 @@ def getType(op: str = 1) -> str:
         return "PC", op
     raise Exception(f"FATAL - Unrecognised operand type: {op}")
 
-def translate(opCode: str, op1: str = "" , op2: str = "", op3: str = "") -> str:
+def translate(opCode: str, op1: str = "", op2: str = "", op3: str = "") -> str:
     
     if op1:
         op1Type, op1 = getType(op1)
@@ -46,15 +46,17 @@ ADD(<A>, <C>);;"""
                 answer = """SPT(<B>); FFG();
 STL(~-1) FLG(ZF); LOD(<A>);"""
             else:
-                answer = """ADD(SP, <B>, R0) STL(~+1);;
+                answer = """;;
+ADD(SP, <B>, R0) STL(~+1);;
 STL(~+0) FLG(!CF); LOD(<A>);"""
         else:
             if op2Type == "IMM":
                 answer = """SPT(<A>); FFG();
 STL(~-1) FLG(!CF); LOD(R9);
-ADD(RP, R9, R0) STL(~+0) FLG(!CF); STL(RET);"""
+ADD(RP, R0, R9) STL(~+0) FLG(!CF); STL(RET);"""
             else:
-                answer = """MOV(SP, <A>) STL(~+1); LOD(R9) FFG();
+                answer = """;;
+MOV(SP, <A>) STL(~+1); LOD(R9) FFG();
 STL(~-1) FLG(!CF); ADD(RP, R0, R9);
 STL(RET);;"""
         
@@ -63,14 +65,16 @@ STL(RET);;"""
             if op1Type == "IMM":
                 answer = """STR(<B>) SPT(<A>);;"""
             else:
-                answer = """MOV(SP, <A>) STL(~+0) FLG(!CF); STR(<B>);"""
+                answer = """;;
+MOV(SP, <A>) STL(~+0) FLG(!CF); STR(<B>);"""
         else:
             if op1Type == "IMM":
-                answer = """IMM(SP, <A>);;
+                answer = """SPT(<A>);;
 STR(<B>);;"""
             else:
-                answer = """MOV(SP, <A>) STL(~+0) FLG(!CF); STR(<B>);"""
-        
+                answer = """;;
+MOV(SP, <A>) STL(~+0) FLG(!CF); STR(<B>);"""
+
     elif opCode == "BGE":
         
         if op1Type == "IMM" and op2Type == "REG" and op3Type == "REG":
@@ -269,18 +273,18 @@ SUB(R0, <C>, R9) FLG(!ZF) STL(~+1);;
     
     elif opCode == "BOD":
         if op1Type == "REG":
-            answer = """ADD(RP, R0, <A>) STL(~+0) FLG(!CF); ADD(R0, <B>) FLG(OD) STL(~+1);
+            answer = """ADD(RP, R0, <A>) STL(~+0) FLG(!CF); MOV(R0, <B>) FLG(OD) STL(~+1);
 ; STL(RET);"""
         else:
-            answer = """ADD(R0, <B>) FLG(OD) STL(~+1);;
+            answer = """MOV(R0, <B>) FLG(OD) STL(~+1);;
 ; STL(<A>);"""
     
     elif opCode == "BEV":
         if op1Type == "REG":
-            answer = """ADD(RP, R0, <A>) STL(~+0) FLG(!CF); ADD(R0, <B>) FLG(OD) STL(~+1);
+            answer = """ADD(RP, R0, <A>) STL(~+0) FLG(!CF); MOV(R0, <B>) FLG(OD) STL(~+1);
 STL(RET);;"""
         else:
-            answer = """ADD(R0, <B>) FLG(OD) STL(~+1);;
+            answer = """MOV(R0, <B>) FLG(OD) STL(~+1);;
 STL(<A>);;"""
         
     elif opCode == "BLE":
@@ -309,34 +313,34 @@ SUB(R0, <C>, R9) FLG(CF) STL(~+1);;
         
     elif opCode == "BRZ":
         if op1Type == "IMM":
-            answer = """ADD(R0, <B>) FLG(ZF) STL(~+1);;
+            answer = """MOV(R0, <B>) FLG(ZF) STL(~+1);;
 ; STL(<A>);"""
         else:
-            answer = """ADD(RP, R0, <A>) STL(~+0) FLG(!CF); ADD(R0, <B>) FLG(ZF) STL(~+1);
+            answer = """ADD(RP, R0, <A>) STL(~+0) FLG(!CF); MOV(R0, <B>) FLG(ZF) STL(~+1);
 ; STL(RET);"""
         
     elif opCode == "BNZ":
         if op1Type == "IMM":
-            answer = """ADD(R0, <B>) FLG(!ZF) STL(~+1);;
+            answer = """MOV(R0, <B>) FLG(!ZF) STL(~+1);;
 ; STL(<A>);"""
         else:
-            answer = """ADD(RP, R0, <A>) STL(~+0) FLG(!CF); ADD(R0, <B>) FLG(!ZF) STL(~+1);
+            answer = """ADD(RP, R0, <A>) STL(~+0) FLG(!CF); MOV(R0, <B>) FLG(!ZF) STL(~+1);
 ; STL(RET);"""
         
     elif opCode == "BRN":
         if op1Type == "IMM":
-            answer = """ADD(R0, <B>) FLG(NE) STL(~+1);;
+            answer = """MOV(R0, <B>) FLG(NE) STL(~+1);;
 ; STL(<A>);"""
         else:
-            answer = """ADD(RP, R0, <A>) STL(~+0) FLG(!CF); ADD(R0, <B>) FLG(NE) STL(~+1);
+            answer = """ADD(RP, R0, <A>) STL(~+0) FLG(!CF); MOV(R0, <B>) FLG(NE) STL(~+1);
 ; STL(RET);"""
         
     elif opCode == "BRP":
         if op1Type == "IMM":
-            answer = """ADD(R0, <B>) FLG(NE) STL(~+1);;
+            answer = """MOV(R0, <B>) FLG(NE) STL(~+1);;
 STL(<A>);;"""
         else:
-            answer = """ADD(RP, R0, <A>) STL(~+0) FLG(!CF); ADD(R0, <B>) FLG(NE) STL(~+1);
+            answer = """ADD(RP, R0, <A>) STL(~+0) FLG(!CF); MOV(R0, <B>) FLG(NE) STL(~+1);
 STL(RET);;"""
         
     elif opCode == "PSH":
@@ -358,7 +362,7 @@ ADD(RP, R0, <A>) STL(~-1) FLG(!CF); STR(~+1) STL(RET);"""
     elif opCode == "RET":
         answer = """;;
 MOV(SP, R10) STL(~+0) FLG(!CF); INC(R10) STL(~+1);
-LOD(R9) STL(~+0) FLG(!CF); MOV(RP, R9);
+LOD(R9) STL(~+0) FLG(!CF); ADD(RP, R0, R9);
 STL(RET);;"""
         
     elif opCode == "HLT":
@@ -369,13 +373,15 @@ STL(RET);;"""
             answer = """SPT(<B>); FFG();
 STL(~-1) FLG(!CF); LOD(SR) SPT(<A>);"""
         elif (op1Type == "IMM") and (op2Type == "REG"):
-            answer = """MOV(SP, <B>) STL(~+0) FLG(!CF); STL(~+1);
+            answer = """;;
+MOV(SP, <B>) STL(~+0) FLG(!CF); STL(~+1);
 LOD(SR) SPT(<A>);;"""
         elif (op1Type == "REG") and (op2Type == "IMM"):
             answer = """SPT(<B>); FFG();
 MOV(SP, <A>) STL(~-1) FLG(!CF); LOD(SR);"""
         elif (op1Type == "REG") and (op2Type == "REG"):
-            answer = """MOV(SP, <B>) STL(~+0) FLG(!CF); MOV(SP, <A>) STL(~+1);
+            answer = """;;
+MOV(SP, <B>) STL(~+0) FLG(!CF); MOV(SP, <A>) STL(~+1);
 LOD(SR);;"""
         
     elif opCode == "BRC":
@@ -696,7 +702,7 @@ ADD(SR, <B>, R9) SPT(131);;
 AND(R8, <C>, 128); STL(~+1) FLG(!CF);
 ADD(SR, <C>, R8) SPT(130); STL(~+1) FLG(!CF);
 STL(~-2) FLG(!CF); ADD(R0, R8, R9) FLG(NE) STL(~+1);
-LOD(<A>); ADD(<A>, !SR, R0);"""
+LOD(<A>); ADC(<A>, !SR, R0);"""
         elif (op2Type == "REG") and (op3Type == "IMM"):
             answer = """SPT(132) STR(R0);;
 IMM(R8, 128);;
@@ -706,7 +712,7 @@ AND(R8, <C>, R8);;
 SPT(130); STL(~+1) FLG(!CF);
 ADD(SR, <C>, R8); STL(~+1) FLG(!CF);
 STL(~-2) FLG(!CF); ADD(R0, R8, R9) FLG(NE) STL(~+1);
-LOD(<A>); ADD(<A>, !SR, R0);"""
+LOD(<A>); ADC(<A>, !SR, R0);"""
         elif (op2Type == "IMM") and (op3Type == "REG"):
             answer = """SPT(132) STR(R0);;
 IMM(R8, 128);;
@@ -716,7 +722,7 @@ ADD(SR, <B>, R9);;
 AND(R8, <C>, R8); STL(~+1) FLG(!CF);
 ADD(SR, <C>, R8) SPT(130); STL(~+1) FLG(!CF);
 STL(~-2) FLG(!CF); ADD(R0, R8, R9) FLG(NE) STL(~+1);
-LOD(<A>); ADD(<A>, !SR, R0);"""
+LOD(<A>); ADC(<A>, !SR, R0);"""
         
     elif opCode == "SBRL":
         if (op1Type == "IMM") and (op2Type == "REG") and (op3Type == "REG"):
@@ -1112,18 +1118,20 @@ INC(R9) STL(~+1);;"""
     if op1:
         if op1 == "SP":
             op1 = "R10"
-            answer = ";;\n" + answer
-        answer = answer.replace("<A>", op1)
     if op2:
         if op2 == "SP":
             op2 = "R10"
-            answer = ";;\n" + answer
-        answer = answer.replace("<B>", op2)
     if op3:
         if op3 == "SP":
             op3 = "R10"
-            answer = ";;\n" + answer
+    
+    if op1:
+        answer = answer.replace("<A>", op1)
+    if op2:
+        answer = answer.replace("<B>", op2)
+    if op3:
         answer = answer.replace("<C>", op3)
+        
     
     return answer
 
