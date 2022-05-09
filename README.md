@@ -3,6 +3,7 @@
 MPU7 Assembler and URCL converter written in Python.
 
 To assemble MPU7 code:
+
 Place .mpu7 file containing MPU7 assembly in the MPU7_Code folder
 
 Run main.py and enter in the name of the file without the .mpu7 extention
@@ -14,6 +15,7 @@ Paste in the generated schematics on top of the instruction ROM and Immediate RO
 Reset and then run the CPU (make sure clock is off before reseting!!)
 
 To convert URCL to MPU7 assembly:
+
 Place the .urcl file containing URCL code in the URCL and B code folder
 
 Run main2.py and enter in the name if the file without the .urcl file extention
